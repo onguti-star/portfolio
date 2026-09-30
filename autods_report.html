@@ -1,0 +1,3061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDS Detailed HTML Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 0;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .container {
+            max-width: 95vw;
+            width: 1400px;
+            background-color: white;
+            padding: 50px;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 1600px) {
+            .container {
+                width: 95vw;
+                max-width: none;
+                padding: 40px;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+        .report-header {
+            border-bottom: 4px solid #0d6efd;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .report-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+        .report-meta {
+            color: #6c757d;
+            font-size: 0.95em;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary-action {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-primary-action:hover {
+            background-color: #0a58ca;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13,110,253,0.3);
+        }
+        .btn-secondary-action {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary-action:hover {
+            background-color: #5a6268;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+        }
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            page-break-after: avoid;
+        }
+        .subsection-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #495057;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .stat-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 15px 0 25px;
+        }
+        .stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+        table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0d6efd;
+        }
+        .toc h3 {
+            color: #0d6efd;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0d6efd;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .toc a:hover {
+            color: #0a58ca;
+            text-decoration: underline;
+        }
+        .correlation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 8px 0;
+            border-radius: 4px;
+            border-left: 3px solid #0d6efd;
+        }
+        .correlation-value {
+            font-weight: 700;
+            color: #0d6efd;
+            font-family: 'Courier New', monospace;
+        }
+        .cleaning-item {
+            padding: 10px;
+            margin: 8px 0;
+            background-color: #d4edda;
+            border-left: 3px solid #198754;
+            border-radius: 4px;
+        }
+        .cleaning-type {
+            display: inline-block;
+            margin-bottom: 5px;
+            padding: 2px 7px;
+            border-radius: 3px;
+            background-color: rgba(25,135,84,0.14);
+            color: #146c43;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .quality-item {
+            padding: 12px 14px;
+            margin: 10px 0;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        .quality-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+        .prediction-item {
+            padding: 14px 16px;
+            margin: 12px 0;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        .prediction-output {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #198754;
+            margin-bottom: 6px;
+        }
+        .prediction-meta,
+        .prediction-inputs {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .prediction-inputs {
+            margin-top: 6px;
+            overflow-wrap: anywhere;
+        }
+        .analysis-item {
+            padding: 14px 16px;
+            margin: 12px 0;
+            background-color: #eef8ff;
+            border-left: 4px solid #0dcaf0;
+            border-radius: 4px;
+        }
+        .analysis-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .importance-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            min-width: 120px;
+        }
+        .importance-fill {
+            height: 100%;
+            background-color: #ffc107;
+        }
+        .narrative-text {
+            color: #495057;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+        .data-preview {
+            font-size: 0.85em;
+            overflow-x: auto;
+        }
+        .chart-row {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .chart-card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+        .chart-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            min-height: 600px;
+        }
+        .chart-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .chart-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            background-color: white;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .chart-btn:hover {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(13,110,253,0.3);
+        }
+        .chart-canvas-wrap canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .chart-title {
+            margin-bottom: 12px;
+            color: #0d6efd;
+            font-size: 1.15em;
+            font-weight: 700;
+        }
+        .chart-notice {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 992px) {
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .report-title {
+                font-size: 1.8em;
+            }
+            .section-title {
+                font-size: 1.4em;
+            }
+        }
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+                max-width: 100%;
+                width: 100%;
+            }
+            .action-buttons {
+                display: none !important;
+            }
+            .section-title {
+                page-break-after: avoid;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            .chart-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="report-header">
+            <div>
+                <h1 class="report-title">📊 AutoDS Analysis Report</h1>
+                <p class="report-meta"><strong>Dataset:</strong> lending_club_loan_two</p>
+                <p class="report-meta"><strong>Generated:</strong> 2026-09-02 00:27</p>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-action btn-primary-action" onclick="window.print()">
+                    🖨️ Print / Save as PDF
+                </button>
+            </div>
+        </div>
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#dataset">Dataset Overview</a></li>
+                <li><a href="#original-preview">Original Data (First 15 Rows)</a></li>
+                <li><a href="#notes">Notes</a></li>
+                <li><a href="#summary">EDA Summary</a></li>
+                <li><a href="#quality">Data Quality Details</a></li>
+                <li><a href="#describe">Data Describe Summary</a></li>
+                <li><a href="#columns">Column Analysis</a></li>
+                <li><a href="#correlations">Correlations</a></li>
+                <li><a href="#visualizations">Visualizations</a></li>
+                <li><a href="#pca">Principal Component Analysis (PCA)</a></li>
+                <li><a href="#cleaning">Data Cleaning Log</a></li>
+                <li><a href="#updated-preview">Updated Data (First 15 Rows)</a></li>
+                <li><a href="#training">Model Training Results</a></li>
+                <li><a href="#predictions">Saved Predictions</a></li>
+            </ul>
+        </div>
+        <h2 class="section-title" id="dataset">📈 Dataset Overview</h2>
+        <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">Total Rows</div>
+            <div class="stat-value">396,030</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Total Columns</div>
+            <div class="stat-value">27</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Duplicate Rows</div>
+            <div class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Missing Cells</div>
+            <div class="stat-value">42,984</div>
+            <span style="color: #6c757d; font-size: 0.9em;">of 10,692,810 total</span>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Missing Cell Rate</div>
+            <div class="stat-value">0.40%</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Numeric Columns</div>
+            <div class="stat-value">12</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Categorical Columns</div>
+            <div class="stat-value">14</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Text Columns</div>
+            <div class="stat-value">1</div>
+        </div>
+        </div>
+        <h2 class="section-title" id="original-preview">🔒 Original Data (First 15 Rows)</h2>
+        <div class="data-preview">
+            <table class="table">
+                <thead><tr>
+<th>loan_amnt</th>
+<th>term</th>
+<th>int_rate</th>
+<th>installment</th>
+<th>grade</th>
+<th>sub_grade</th>
+<th>emp_title</th>
+<th>emp_length</th>
+<th>home_ownership</th>
+<th>annual_inc</th>
+<th>verification_status</th>
+<th>issue_d</th>
+<th>loan_status</th>
+<th>purpose</th>
+<th>title</th>
+<th>dti</th>
+<th>earliest_cr_line</th>
+<th>open_acc</th>
+<th>pub_rec</th>
+<th>revol_bal</th>
+<th>revol_util</th>
+<th>total_acc</th>
+<th>initial_list_status</th>
+<th>application_type</th>
+<th>mort_acc</th>
+<th>pub_rec_bankruptcies</th>
+<th>address</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+<td>1e+04</td>
+<td> 36 months</td>
+<td>11.44</td>
+<td>329.5</td>
+<td>B</td>
+<td>B4</td>
+<td>Marketing</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>1.17e+05</td>
+<td>Not Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>vacation</td>
+<td>Vacation</td>
+<td>26.24</td>
+<td>Jun-1990</td>
+<td>16</td>
+<td>0</td>
+<td>3.637e+04</td>
+<td>41.8</td>
+<td>25</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>0174 Michelle Gateway Mendozaberg, OK 22690</td>
+                    </tr>
+                    <tr>
+<td>8,000</td>
+<td> 36 months</td>
+<td>11.99</td>
+<td>265.7</td>
+<td>B</td>
+<td>B5</td>
+<td>Credit analyst </td>
+<td>4 years</td>
+<td>MORTGAGE</td>
+<td>6.5e+04</td>
+<td>Not Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>22.05</td>
+<td>Jul-2004</td>
+<td>17</td>
+<td>0</td>
+<td>2.013e+04</td>
+<td>53.3</td>
+<td>27</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>1076 Carney Fort Apt. 347 Loganmouth, SD 05113</td>
+                    </tr>
+                    <tr>
+<td>1.56e+04</td>
+<td> 36 months</td>
+<td>10.49</td>
+<td>507</td>
+<td>B</td>
+<td>B3</td>
+<td>Statistician</td>
+<td>&lt; 1 year</td>
+<td>RENT</td>
+<td>4.306e+04</td>
+<td>Source Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>12.79</td>
+<td>Aug-2007</td>
+<td>13</td>
+<td>0</td>
+<td>1.199e+04</td>
+<td>92.2</td>
+<td>26</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>87025 Mark Dale Apt. 269 New Sabrina, WV 05113</td>
+                    </tr>
+                    <tr>
+<td>7,200</td>
+<td> 36 months</td>
+<td>6.49</td>
+<td>220.6</td>
+<td>A</td>
+<td>A2</td>
+<td>Client Advocate</td>
+<td>6 years</td>
+<td>RENT</td>
+<td>5.4e+04</td>
+<td>Not Verified</td>
+<td>Nov-2014</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>2.6</td>
+<td>Sep-2006</td>
+<td>6</td>
+<td>0</td>
+<td>5,472</td>
+<td>21.5</td>
+<td>13</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>823 Reid Ford Delacruzside, MA 00813</td>
+                    </tr>
+                    <tr>
+<td>2.438e+04</td>
+<td> 60 months</td>
+<td>17.27</td>
+<td>609.3</td>
+<td>C</td>
+<td>C5</td>
+<td>Destiny Management Inc.</td>
+<td>9 years</td>
+<td>MORTGAGE</td>
+<td>5.5e+04</td>
+<td>Verified</td>
+<td>Apr-2013</td>
+<td>Charged Off</td>
+<td>credit_card</td>
+<td>Credit Card Refinance</td>
+<td>33.95</td>
+<td>Mar-1999</td>
+<td>13</td>
+<td>0</td>
+<td>2.458e+04</td>
+<td>69.8</td>
+<td>43</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>1</td>
+<td>0</td>
+<td>679 Luna Roads Greggshire, VA 11650</td>
+                    </tr>
+                    <tr>
+<td>2e+04</td>
+<td> 36 months</td>
+<td>13.33</td>
+<td>677.1</td>
+<td>C</td>
+<td>C3</td>
+<td>HR Specialist</td>
+<td>10+ years</td>
+<td>MORTGAGE</td>
+<td>8.679e+04</td>
+<td>Verified</td>
+<td>Sep-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>16.31</td>
+<td>Jan-2005</td>
+<td>8</td>
+<td>0</td>
+<td>2.576e+04</td>
+<td>100.6</td>
+<td>23</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>0</td>
+<td>1726 Cooper Passage Suite 129 North Deniseberg, DE 30723</td>
+                    </tr>
+                    <tr>
+<td>1.8e+04</td>
+<td> 36 months</td>
+<td>5.32</td>
+<td>542.1</td>
+<td>A</td>
+<td>A1</td>
+<td>Software Development Engineer</td>
+<td>2 years</td>
+<td>MORTGAGE</td>
+<td>1.25e+05</td>
+<td>Source Verified</td>
+<td>Sep-2015</td>
+<td>Fully Paid</td>
+<td>home_improvement</td>
+<td>Home improvement</td>
+<td>1.36</td>
+<td>Aug-2005</td>
+<td>8</td>
+<td>0</td>
+<td>4,178</td>
+<td>4.9</td>
+<td>25</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>1008 Erika Vista Suite 748 East Stephanie, TX 22690</td>
+                    </tr>
+                    <tr>
+<td>1.3e+04</td>
+<td> 36 months</td>
+<td>11.14</td>
+<td>426.5</td>
+<td>B</td>
+<td>B2</td>
+<td>Office Depot</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>4.6e+04</td>
+<td>Not Verified</td>
+<td>Sep-2012</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>No More Credit Cards</td>
+<td>26.87</td>
+<td>Sep-1994</td>
+<td>11</td>
+<td>0</td>
+<td>1.342e+04</td>
+<td>64.5</td>
+<td>15</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>USCGC Nunez FPO AE 30723</td>
+                    </tr>
+                    <tr>
+<td>1.89e+04</td>
+<td> 60 months</td>
+<td>10.99</td>
+<td>410.8</td>
+<td>B</td>
+<td>B3</td>
+<td>Application Architect</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>1.03e+05</td>
+<td>Verified</td>
+<td>Oct-2014</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>12.52</td>
+<td>Jun-1994</td>
+<td>13</td>
+<td>0</td>
+<td>1.864e+04</td>
+<td>32.9</td>
+<td>40</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>USCGC Tran FPO AP 22690</td>
+                    </tr>
+                    <tr>
+<td>2.63e+04</td>
+<td> 36 months</td>
+<td>16.29</td>
+<td>928.4</td>
+<td>C</td>
+<td>C5</td>
+<td>Regado Biosciences</td>
+<td>3 years</td>
+<td>MORTGAGE</td>
+<td>1.15e+05</td>
+<td>Verified</td>
+<td>Apr-2012</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt Consolidation</td>
+<td>23.69</td>
+<td>Dec-1997</td>
+<td>13</td>
+<td>0</td>
+<td>2.217e+04</td>
+<td>82.4</td>
+<td>37</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>1</td>
+<td>0</td>
+<td>3390 Luis Rue Mauricestad, VA 00813</td>
+                    </tr>
+                    <tr>
+<td>1e+04</td>
+<td> 36 months</td>
+<td>13.11</td>
+<td>337.5</td>
+<td>B</td>
+<td>B4</td>
+<td>Sodexo</td>
+<td>2 years</td>
+<td>RENT</td>
+<td>9.5e+04</td>
+<td>Verified</td>
+<td>Jun-2013</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt Consolidation</td>
+<td>12.04</td>
+<td>Dec-1990</td>
+<td>5</td>
+<td>1</td>
+<td>4,702</td>
+<td>64.4</td>
+<td>26</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>1</td>
+<td>40245 Cody Drives Bartlettfort, NM 00813</td>
+                    </tr>
+                    <tr>
+<td>3.5e+04</td>
+<td> 36 months</td>
+<td>14.64</td>
+<td>1,207</td>
+<td>C</td>
+<td>C3</td>
+<td>Director Bureau of Equipment Inventory</td>
+<td>8 years</td>
+<td>MORTGAGE</td>
+<td>1.3e+05</td>
+<td>Verified</td>
+<td>May-2014</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>12.19</td>
+<td>May-1984</td>
+<td>30</td>
+<td>0</td>
+<td>8.126e+04</td>
+<td>18.7</td>
+<td>61</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>0</td>
+<td>3126 Sean Dale Apt. 141 South Matthew, MS 00813</td>
+                    </tr>
+                    <tr>
+<td>7,500</td>
+<td> 36 months</td>
+<td>9.17</td>
+<td>239.1</td>
+<td>B</td>
+<td>B2</td>
+<td>Social Work/Care Manager</td>
+<td>7 years</td>
+<td>OWN</td>
+<td>5.5e+04</td>
+<td>Not Verified</td>
+<td>Dec-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>28.21</td>
+<td>Apr-1995</td>
+<td>13</td>
+<td>0</td>
+<td>1.784e+04</td>
+<td>54.9</td>
+<td>35</td>
+<td>w</td>
+<td>JOINT</td>
+<td>4</td>
+<td>0</td>
+<td>4173 David Extension West Beckyfort, MS 70466</td>
+                    </tr>
+                    <tr>
+<td>3.5e+04</td>
+<td> 60 months</td>
+<td>12.29</td>
+<td>783.7</td>
+<td>C</td>
+<td>C1</td>
+<td>Regional Counsel</td>
+<td>10+ years</td>
+<td>MORTGAGE</td>
+<td>1.57e+05</td>
+<td>Verified</td>
+<td>Apr-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>29.39</td>
+<td>Jan-1997</td>
+<td>17</td>
+<td>0</td>
+<td>1.131e+05</td>
+<td>94.9</td>
+<td>27</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>2</td>
+<td>0</td>
+<td>3343 Wells Mews Shellychester, OR 29597</td>
+                    </tr>
+                    <tr>
+<td>2.598e+04</td>
+<td> 36 months</td>
+<td>6.62</td>
+<td>797.5</td>
+<td>A</td>
+<td>A2</td>
+<td>Pullman Regional Hospital</td>
+<td>9 years</td>
+<td>MORTGAGE</td>
+<td>6.5e+04</td>
+<td>Verified</td>
+<td>Oct-2012</td>
+<td>Fully Paid</td>
+<td>small_business</td>
+<td>Business</td>
+<td>9.18</td>
+<td>May-2001</td>
+<td>9</td>
+<td>0</td>
+<td>5,140</td>
+<td>7.2</td>
+<td>35</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>6</td>
+<td>0</td>
+<td>0472 Weber Manors Apt. 660 Lake Andrew, NH 29597</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="report-meta" style="margin-top:8px;">Showing first 15 of 396,030 rows.</p>
+        </div>
+        <h2 class="section-title" id="notes">🖊️ Notes</h2>
+        <div class="narrative-text">
+            <p><strong>Details</strong></p><p><strong>LoanStatNew Description</strong></p><ul><li>loan_amnt - The listed amount of the loan applied for by the borrower. If at some point in time, the credit department reduces the loan amount, then it will be reflected in this value.</li><li>term - The number of payments on the loan. Values are in months and can be either 36 or 60.</li><li>int_rate - Interest Rate on the loan</li><li>installment - The monthly payment owed by the borrower if the loan originates.</li><li>grade - LC assigned loan grade</li><li>sub_grade - LC assigned loan subgrade</li><li>emp_title - The job title supplied by the Borrower when applying for the loan.*</li><li>emp_length - Employment length in years. Possible values are between 0 and 10 where 0 means less than one year and 10 means ten or more years. </li><li>home_ownership - The home ownership status provided by the borrower during registration or obtained from the credit report. Our values are: RENT, OWN, MORTGAGE, OTHER</li><li>annual_inc - The self-reported annual income provided by the borrower during registration.</li><li>verification_status - Indicates if income was verified by LC, not verified, or if the income source was verified</li><li>issue_d - The month which the loan was funded</li><li>loan_status - Current status of the loan</li><li>purpose - A category provided by the borrower for the loan request. </li><li>title - The loan title provided by the borrower</li><li>zip_code - The first 3 numbers of the zip code provided by the borrower in the loan application.</li><li>addr_state - The state provided by the borrower in the loan application</li><li>dti-A ratio - calculated using the borrower’s total monthly debt payments on the total debt obligations, excluding mortgage and the requested LC loan, divided by the borrower’s self-reported monthly income.</li><li>earliest_cr_line - The month the borrower&#x27;s earliest reported credit line was opened</li><li>open_acc - The number of open credit lines in the borrower&#x27;s credit file.</li><li>pub_rec - Number of derogatory public records</li><li>revol_bal - Total credit revolving balance</li><li>revol_util - Revolving line utilization rate, or the amount of credit the borrower is using relative to all available revolving credit.</li><li>total_acc - The total number of credit lines currently in the borrower&#x27;s credit file</li><li>initial_list_status - The initial listing status of the loan. Possible values are – W, F</li><li>application_type - Indicates whether the loan is an individual application or a joint application with two co-borrowers</li><li>mort_acc - Number of mortgage accounts.</li><li>pub_rec_bankruptcies - Number of public record bankruptcies</li></ul><p><strong>show Charged Off rate by grade</strong></p><table><thead><tr><th>grade</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>G</td><td>3054</td><td>1461</td><td>47.84</td></tr><tr><td>F</td><td>11772</td><td>5037</td><td>42.79</td></tr><tr><td>E</td><td>31488</td><td>11765</td><td>37.36</td></tr><tr><td>D</td><td>63524</td><td>18338</td><td>28.87</td></tr><tr><td>C</td><td>105987</td><td>22449</td><td>21.18</td></tr><tr><td>B</td><td>116018</td><td>14587</td><td>12.57</td></tr><tr><td>A</td><td>64187</td><td>4036</td><td>6.29</td></tr></tbody></table><p><strong>show Charged Off rate by term</strong></p><table><thead><tr><th>term</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>60 months</td><td>94025</td><td>30033</td><td>31.94</td></tr><tr><td>36 months</td><td>302005</td><td>47640</td><td>15.77</td></tr></tbody></table><p><strong>show Charged Off rate by annual_inc_band</strong></p><table><thead><tr><th>annual_inc_band</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>Under 40k</td><td>63517</td><td>15683</td><td>24.69</td></tr><tr><td>40k-60k</td><td>108327</td><td>23520</td><td>21.71</td></tr><tr><td>60k-90k</td><td>123828</td><td>23294</td><td>18.81</td></tr><tr><td>90k-120k</td><td>55209</td><td>8606</td><td>15.59</td></tr><tr><td>120k-150k</td><td>23346</td><td>3472</td><td>14.87</td></tr><tr><td>150k-226k</td><td>21803</td><td>3098</td><td>14.21</td></tr></tbody></table><p><strong>show Charged Off rate by purpose</strong></p><table><thead><tr><th>purpose</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>small_business</td><td>5701</td><td>1679</td><td>29.45</td></tr><tr><td>moving</td><td>2854</td><td>670</td><td>23.48</td></tr><tr><td>renewable_energy</td><td>329</td><td>77</td><td>23.4</td></tr><tr><td>medical</td><td>4196</td><td>911</td><td>21.71</td></tr><tr><td>other</td><td>21185</td><td>4495</td><td>21.22</td></tr><tr><td>debt_consolidation</td><td>234507</td><td>48640</td><td>20.74</td></tr><tr><td>house</td><td>2201</td><td>434</td><td>19.72</td></tr><tr><td>vacation</td><td>2452</td><td>464</td><td>18.92</td></tr><tr><td>home_improvement</td><td>24030</td><td>4087</td><td>17.01</td></tr><tr><td>credit_card</td><td>83019</td><td>13874</td><td>16.71</td></tr><tr><td>major_purchase</td><td>8790</td><td>1448</td><td>16.47</td></tr><tr><td>educational</td><td>257</td><td>42</td><td>16.34</td></tr><tr><td>car</td><td>4697</td><td>633</td><td>13.48</td></tr><tr><td>wedding</td><td>1812</td><td>219</td><td>12.09</td></tr></tbody></table><p><strong>show Charged Off rate by home_ownership</strong></p><table><thead><tr><th>home_ownership</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>RENT</td><td>159790</td><td>36212</td><td>22.66</td></tr><tr><td>NONE</td><td>31</td><td>7</td><td>22.58</td></tr><tr><td>OWN</td><td>37746</td><td>7806</td><td>20.68</td></tr><tr><td>MORTGAGE</td><td>198348</td><td>33632</td><td>16.96</td></tr><tr><td>OTHER</td><td>112</td><td>16</td><td>14.29</td></tr><tr><td>ANY</td><td>3</td><td>0</td><td>0</td></tr></tbody></table><p><strong>show Charged Off rate by application_type</strong></p><table><thead><tr><th>application_type</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>DIRECT_PAY</td><td>286</td><td>102</td><td>35.66</td></tr><tr><td>INDIVIDUAL</td><td>395319</td><td>77517</td><td>19.61</td></tr><tr><td>JOINT</td><td>425</td><td>54</td><td>12.71</td></tr></tbody></table><p><strong>show Charged Off rate by verification_status</strong></p><table><thead><tr><th>verification_status</th><th>total_rows</th><th>Charged Off_count</th><th>Charged Off_rate_pct</th></tr></thead><tbody><tr><td>Verified</td><td>139563</td><td>31152</td><td>22.32</td></tr><tr><td>Source Verified</td><td>131385</td><td>28214</td><td>21.47</td></tr><tr><td>Not Verified</td><td>125082</td><td>18307</td><td>14.64</td></tr></tbody></table>
+        </div>
+        <h2 class="section-title" id="summary">📝 EDA Summary</h2>
+        <div class="narrative-text">
+            <p>• This dataset has 396,030 rows and 27 columns.</p>
+
+            <p>• 3 column(s) have missing values. The most affected: emp_title (5.79%), emp_length (4.62%), title (0.44%). During training, missing numeric values get filled with the median and missing categories with the most common value, so you don't need to clean this by hand.</p>
+
+            <p>• 12 column(s) are numeric and 14 are categorical (text/labels). 1 column(s) look like free-form text (reviews, comments, descriptions).</p>
+
+            <p>• 'address' averages 7.4 words per entry across 10,000 non-empty entries, with a vocabulary of 6,377 unique words. Most frequent words: suite, apt, box, lake, port.</p>
+
+            <p>• 'loan_amnt' and 'installment' are strongly correlated (+0.95) — they move together closely, which is useful to know since including both as features rarely adds much beyond using one.</p>
+
+        </div>
+        <h2 class="section-title" id="quality">Data Quality Details</h2>
+        <div class="quality-item">
+            <strong>Identifier-like text</strong>
+            <div class="quality-meta"><strong>Check:</strong> 1 text/category column(s) are mostly unique: address.</div>
+        </div>
+        <h3 class="subsection-title">Columns With Missing Values</h3>
+        <table class="table">
+            <thead><tr><th>Column</th><th>Missing</th><th>Missing %</th><th>Type</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>emp_title</strong></td>
+                    <td>22,927</td>
+                    <td>5.79%</td>
+                    <td>categorical</td>
+                </tr>
+                <tr>
+                    <td><strong>emp_length</strong></td>
+                    <td>18,301</td>
+                    <td>4.62%</td>
+                    <td>categorical</td>
+                </tr>
+                <tr>
+                    <td><strong>title</strong></td>
+                    <td>1,756</td>
+                    <td>0.44%</td>
+                    <td>categorical</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3 class="subsection-title">Numeric Column Ranges</h3>
+        <table class="table">
+            <thead><tr><th>Column</th><th>Mean</th><th>Std</th><th>Min</th><th>Median</th><th>Max</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>loan_amnt</strong></td>
+                    <td>1.411e+04</td>
+                    <td>8,357</td>
+                    <td>500</td>
+                    <td>1.2e+04</td>
+                    <td>4e+04</td>
+                </tr>
+                <tr>
+                    <td><strong>int_rate</strong></td>
+                    <td>13.64</td>
+                    <td>4.472</td>
+                    <td>5.32</td>
+                    <td>13.33</td>
+                    <td>30.99</td>
+                </tr>
+                <tr>
+                    <td><strong>installment</strong></td>
+                    <td>431.8</td>
+                    <td>250.7</td>
+                    <td>16.08</td>
+                    <td>375.4</td>
+                    <td>1,518</td>
+                </tr>
+                <tr>
+                    <td><strong>annual_inc</strong></td>
+                    <td>7.262e+04</td>
+                    <td>3.932e+04</td>
+                    <td>0</td>
+                    <td>6.4e+04</td>
+                    <td>2.25e+05</td>
+                </tr>
+                <tr>
+                    <td><strong>dti</strong></td>
+                    <td>17.35</td>
+                    <td>8.128</td>
+                    <td>0</td>
+                    <td>16.91</td>
+                    <td>58.08</td>
+                </tr>
+                <tr>
+                    <td><strong>open_acc</strong></td>
+                    <td>11.3</td>
+                    <td>5.058</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>32</td>
+                </tr>
+                <tr>
+                    <td><strong>pub_rec</strong></td>
+                    <td>0.1782</td>
+                    <td>0.5307</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>86</td>
+                </tr>
+                <tr>
+                    <td><strong>revol_bal</strong></td>
+                    <td>1.482e+04</td>
+                    <td>1.262e+04</td>
+                    <td>0</td>
+                    <td>1.118e+04</td>
+                    <td>6.04e+04</td>
+                </tr>
+                <tr>
+                    <td><strong>revol_util</strong></td>
+                    <td>53.79</td>
+                    <td>24.41</td>
+                    <td>0</td>
+                    <td>54.8</td>
+                    <td>183.9</td>
+                </tr>
+                <tr>
+                    <td><strong>total_acc</strong></td>
+                    <td>25.41</td>
+                    <td>11.84</td>
+                    <td>2</td>
+                    <td>24</td>
+                    <td>77</td>
+                </tr>
+                <tr>
+                    <td><strong>mort_acc</strong></td>
+                    <td>1.732</td>
+                    <td>2.029</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td><strong>pub_rec_bankruptcies</strong></td>
+                    <td>0.1215</td>
+                    <td>0.356</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>8</td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="section-title" id="describe">📐 Data Describe Summary</h2>
+        <div class="data-preview">
+            <table class="table">
+                <thead><tr><th>Statistic</th>
+<th>loan_amnt</th>
+<th>term</th>
+<th>int_rate</th>
+<th>installment</th>
+<th>grade</th>
+<th>sub_grade</th>
+<th>emp_title</th>
+<th>emp_length</th>
+<th>home_ownership</th>
+<th>annual_inc</th>
+<th>verification_status</th>
+<th>issue_d</th>
+<th>loan_status</th>
+<th>purpose</th>
+<th>title</th>
+<th>dti</th>
+<th>earliest_cr_line</th>
+<th>open_acc</th>
+<th>pub_rec</th>
+<th>revol_bal</th>
+<th>revol_util</th>
+<th>total_acc</th>
+<th>initial_list_status</th>
+<th>application_type</th>
+<th>mort_acc</th>
+<th>pub_rec_bankruptcies</th>
+<th>address</th>
+</tr></thead><tbody>
+                <tr><td><strong>count</strong></td>
+<td>3.96e+05</td>
+<td>396030</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>396030</td>
+<td>396030</td>
+<td>373103</td>
+<td>377729</td>
+<td>396030</td>
+<td>3.96e+05</td>
+<td>396030</td>
+<td>396030</td>
+<td>396030</td>
+<td>396030</td>
+<td>394274</td>
+<td>3.96e+05</td>
+<td>396030</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>396030</td>
+<td>396030</td>
+<td>3.96e+05</td>
+<td>3.96e+05</td>
+<td>396030</td>
+</tr>
+                <tr><td><strong>unique</strong></td>
+<td></td>
+<td>2</td>
+<td></td>
+<td></td>
+<td>7</td>
+<td>35</td>
+<td>173105</td>
+<td>11</td>
+<td>6</td>
+<td></td>
+<td>3</td>
+<td>115</td>
+<td>2</td>
+<td>14</td>
+<td>48816</td>
+<td></td>
+<td>684</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>2</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td>393700</td>
+</tr>
+                <tr><td><strong>top</strong></td>
+<td></td>
+<td> 36 months</td>
+<td></td>
+<td></td>
+<td>B</td>
+<td>B3</td>
+<td>Teacher</td>
+<td>10+ years</td>
+<td>MORTGAGE</td>
+<td></td>
+<td>Verified</td>
+<td>Oct-2014</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td></td>
+<td>Oct-2000</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td></td>
+<td></td>
+<td>USNS Johnson FPO AE 05113</td>
+</tr>
+                <tr><td><strong>freq</strong></td>
+<td></td>
+<td>302005</td>
+<td></td>
+<td></td>
+<td>116018</td>
+<td>26655</td>
+<td>4389</td>
+<td>126041</td>
+<td>198348</td>
+<td></td>
+<td>139563</td>
+<td>14846</td>
+<td>318357</td>
+<td>234507</td>
+<td>152472</td>
+<td></td>
+<td>3017</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>238066</td>
+<td>395319</td>
+<td></td>
+<td></td>
+<td>8</td>
+</tr>
+                <tr><td><strong>mean</strong></td>
+<td>1.411e+04</td>
+<td></td>
+<td>13.64</td>
+<td>431.8</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>7.262e+04</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>17.35</td>
+<td></td>
+<td>11.3</td>
+<td>0.1782</td>
+<td>1.482e+04</td>
+<td>53.79</td>
+<td>25.41</td>
+<td></td>
+<td></td>
+<td>1.732</td>
+<td>0.1215</td>
+<td></td>
+</tr>
+                <tr><td><strong>std</strong></td>
+<td>8,357</td>
+<td></td>
+<td>4.472</td>
+<td>250.7</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>3.932e+04</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>8.128</td>
+<td></td>
+<td>5.058</td>
+<td>0.5307</td>
+<td>1.262e+04</td>
+<td>24.41</td>
+<td>11.84</td>
+<td></td>
+<td></td>
+<td>2.029</td>
+<td>0.356</td>
+<td></td>
+</tr>
+                <tr><td><strong>min</strong></td>
+<td>500</td>
+<td></td>
+<td>5.32</td>
+<td>16.08</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0</td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td></td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td></td>
+</tr>
+                <tr><td><strong>25%</strong></td>
+<td>8,000</td>
+<td></td>
+<td>10.49</td>
+<td>250.3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>4.5e+04</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>11.28</td>
+<td></td>
+<td>8</td>
+<td>0</td>
+<td>6,025</td>
+<td>35.9</td>
+<td>17</td>
+<td></td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td></td>
+</tr>
+                <tr><td><strong>50%</strong></td>
+<td>1.2e+04</td>
+<td></td>
+<td>13.33</td>
+<td>375.4</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>6.4e+04</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>16.91</td>
+<td></td>
+<td>10</td>
+<td>0</td>
+<td>1.118e+04</td>
+<td>54.8</td>
+<td>24</td>
+<td></td>
+<td></td>
+<td>1</td>
+<td>0</td>
+<td></td>
+</tr>
+                <tr><td><strong>75%</strong></td>
+<td>2e+04</td>
+<td></td>
+<td>16.49</td>
+<td>567.3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>9e+04</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>22.98</td>
+<td></td>
+<td>14</td>
+<td>0</td>
+<td>1.962e+04</td>
+<td>72.9</td>
+<td>32</td>
+<td></td>
+<td></td>
+<td>3</td>
+<td>0</td>
+<td></td>
+</tr>
+                <tr><td><strong>max</strong></td>
+<td>4e+04</td>
+<td></td>
+<td>30.99</td>
+<td>1,518</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>2.25e+05</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>58.08</td>
+<td></td>
+<td>32</td>
+<td>86</td>
+<td>6.04e+04</td>
+<td>183.9</td>
+<td>77</td>
+<td></td>
+<td></td>
+<td>12</td>
+<td>8</td>
+<td></td>
+</tr>
+                </tbody>
+            </table>
+        </div>
+        <h2 class="section-title" id="columns">🔍 Column Analysis</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Column Name</th>
+                    <th>Type</th>
+                    <th>Unique</th>
+                    <th>Missing</th>
+                    <th>Sample Stats</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>loan_amnt</strong></td>
+                    <td>numeric</td>
+                    <td>1,397</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=1.411e+04, min=500, max=4e+04</td>
+                </tr>
+                <tr>
+                    <td><strong>term</strong></td>
+                    <td>categorical</td>
+                    <td>2</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top:  36 months (7,571),  60 months (2,429)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>int_rate</strong></td>
+                    <td>numeric</td>
+                    <td>566</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=13.64, min=5.32, max=30.99</td>
+                </tr>
+                <tr>
+                    <td><strong>installment</strong></td>
+                    <td>numeric</td>
+                    <td>55,705</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=431.8, min=16.08, max=1,518</td>
+                </tr>
+                <tr>
+                    <td><strong>grade</strong></td>
+                    <td>categorical</td>
+                    <td>7</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: B (2,950), C (2,680), D (1,638)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>sub_grade</strong></td>
+                    <td>categorical</td>
+                    <td>35</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: B3 (738), B4 (642), C1 (623)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>emp_title</strong></td>
+                    <td>categorical</td>
+                    <td>173,105</td>
+                    <td>22,927 (5.79%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Manager (116), Teacher (116), RN (52)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>emp_length</strong></td>
+                    <td>categorical</td>
+                    <td>11</td>
+                    <td>18,301 (4.62%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: 10+ years (3,215), 2 years (914), &lt; 1 year (809)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>home_ownership</strong></td>
+                    <td>categorical</td>
+                    <td>6</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: MORTGAGE (5,013), RENT (4,026), OWN (958)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>annual_inc</strong></td>
+                    <td>numeric</td>
+                    <td>26,657</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=7.262e+04, min=0, max=2.25e+05</td>
+                </tr>
+                <tr>
+                    <td><strong>verification_status</strong></td>
+                    <td>categorical</td>
+                    <td>3</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Verified (3,564), Source Verified (3,371), Not Verified (3,065)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>issue_d</strong></td>
+                    <td>categorical</td>
+                    <td>115</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Oct-2014 (370), Jul-2014 (347), Jan-2015 (276)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>loan_status</strong></td>
+                    <td>categorical</td>
+                    <td>2</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Fully Paid (7,984), Charged Off (2,016)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>purpose</strong></td>
+                    <td>categorical</td>
+                    <td>14</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: debt_consolidation (5,888), credit_card (2,155), home_improvement (571)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>title</strong></td>
+                    <td>categorical</td>
+                    <td>48,816</td>
+                    <td>1,756 (0.44%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Debt consolidation (3,868), Credit card refinancing (1,328), Home improvement (372)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>dti</strong></td>
+                    <td>numeric</td>
+                    <td>4,241</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=17.35, min=0, max=58.08</td>
+                </tr>
+                <tr>
+                    <td><strong>earliest_cr_line</strong></td>
+                    <td>categorical</td>
+                    <td>684</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: Aug-2000 (84), Oct-2001 (80), Nov-1999 (79)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>open_acc</strong></td>
+                    <td>numeric</td>
+                    <td>33</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=11.3, min=0, max=32</td>
+                </tr>
+                <tr>
+                    <td><strong>pub_rec</strong></td>
+                    <td>numeric</td>
+                    <td>20</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=0.1782, min=0, max=86</td>
+                </tr>
+                <tr>
+                    <td><strong>revol_bal</strong></td>
+                    <td>numeric</td>
+                    <td>48,040</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=1.482e+04, min=0, max=6.04e+04</td>
+                </tr>
+                <tr>
+                    <td><strong>revol_util</strong></td>
+                    <td>numeric</td>
+                    <td>1,226</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=53.79, min=0, max=183.9</td>
+                </tr>
+                <tr>
+                    <td><strong>total_acc</strong></td>
+                    <td>numeric</td>
+                    <td>76</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=25.41, min=2, max=77</td>
+                </tr>
+                <tr>
+                    <td><strong>initial_list_status</strong></td>
+                    <td>categorical</td>
+                    <td>2</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: f (6,040), w (3,960)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>application_type</strong></td>
+                    <td>categorical</td>
+                    <td>3</td>
+                    <td>0 (0.0%)</td>
+                    <td><br><small style='color:#6c757d;'>Top: INDIVIDUAL (9,984), JOINT (13), DIRECT_PAY (3)</small></td>
+                </tr>
+                <tr>
+                    <td><strong>mort_acc</strong></td>
+                    <td>numeric</td>
+                    <td>13</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=1.732, min=0, max=12</td>
+                </tr>
+                <tr>
+                    <td><strong>pub_rec_bankruptcies</strong></td>
+                    <td>numeric</td>
+                    <td>9</td>
+                    <td>0 (0.0%)</td>
+                    <td>μ=0.1215, min=0, max=8</td>
+                </tr>
+                <tr>
+                    <td><strong>address</strong></td>
+                    <td>text</td>
+                    <td>393,700</td>
+                    <td>0 (0.0%)</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="section-title" id="correlations">🔗 Strongest Correlations</h2>
+        <div class="correlation-item">
+            <span><strong>loan_amnt</strong> ↔ <strong>installment</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.954</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>pub_rec</strong> ↔ <strong>pub_rec_bankruptcies</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.717</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>open_acc</strong> ↔ <strong>total_acc</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.678</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>loan_amnt</strong> ↔ <strong>annual_inc</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.476</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>installment</strong> ↔ <strong>annual_inc</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.459</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>loan_amnt</strong> ↔ <strong>revol_bal</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.438</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>installment</strong> ↔ <strong>revol_bal</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.423</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>annual_inc</strong> ↔ <strong>revol_bal</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.417</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>total_acc</strong> ↔ <strong>mort_acc</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.388</span>
+        </div>
+        <div class="correlation-item">
+            <span><strong>revol_bal</strong> ↔ <strong>revol_util</strong></span>
+            <span class="correlation-value" style="color: #0d6efd;">+0.341</span>
+        </div>
+        <h2 class="section-title" id="visualizations">📊 Visualizations Created</h2>
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-title">loan_amnt vs installment (scatter)</div>
+                <div class="chart-notice"></div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(0)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_0"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Distribution of term</div>
+                <div class="chart-notice"></div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(1)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_1"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Histogram of loan_amnt</div>
+                <div class="chart-notice">Most loan_amnt values fall in the 5500.00–10500.00 range, with 112,957 record(s) in that bin.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(2)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_2"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">loan_amnt by grade and loan_status</div>
+                <div class="chart-notice">Sum of &#x27;loan_amnt&#x27; for each &#x27;grade&#x27;, split by &#x27;loan_status&#x27;.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(3)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_3"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">loan_amnt by purpose</div>
+                <div class="chart-notice">Average of loan_amnt for each &#x27;purpose&#x27;.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(4)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_4"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">loan_amnt by purpose and loan_status</div>
+                <div class="chart-notice">Sum of &#x27;loan_amnt&#x27; for each &#x27;purpose&#x27;, split by &#x27;loan_status&#x27;.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(5)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_5"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Share of application_type</div>
+                <div class="chart-notice">INDIVIDUAL is the largest group in application_type, with 395,319 record(s) (99.8% of the shown values).</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(6)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_6"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Share of application_type</div>
+                <div class="chart-notice">JOINT is the largest group in application_type, with 425 record(s) (59.8% of the shown values).</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(7)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_7"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">loan_amnt by verification_status and loan_status</div>
+                <div class="chart-notice">Sum of &#x27;loan_amnt&#x27; for each &#x27;verification_status&#x27;, split by &#x27;loan_status&#x27;.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(8)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_8"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">annual_inc vs loan_amnt</div>
+                <div class="chart-notice">annual_inc and loan_amnt show a moderate positive pattern in the plotted points (correlation 0.47).</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(9)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_9"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Histogram of int_rate</div>
+                <div class="chart-notice">Most int_rate values fall in the 11.74–13.88 range, with 76,286 record(s) in that bin.</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(10)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_10"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Share of term</div>
+                <div class="chart-notice"> 36 months is the largest group in term, with 302,005 record(s) (76.3% of the shown values).</div>
+                <div class="chart-actions">
+                    <button class="chart-btn" onclick="copyChart(11)">📋 Copy Image</button>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart_11"></canvas></div>
+            </div>
+        </div>
+        <h2 class="section-title" id="pca">Principal Component Analysis (PCA)</h2>
+        <div class="analysis-item">
+            <strong>PCA verdict:</strong> Good
+            <div class="analysis-meta">6 components capture 80% of the variance (down from 12 original columns). PCA is worth using for dimensionality reduction before training.</div>
+        </div>
+        <div class="metric-grid">
+            <div class="stat-box"><div class="stat-value">12</div><div class="stat-label">numeric columns</div></div>
+            <div class="stat-box"><div class="stat-value">6</div><div class="stat-label">components for 80% variance</div></div>
+            <div class="stat-box"><div class="stat-value">8</div><div class="stat-label">components for 90% variance</div></div>
+            <div class="stat-box"><div class="stat-value">41.85%</div><div class="stat-label">variance in PC1 and PC2</div></div>
+        </div>
+        <h3 class="subsection-title">Variance Explained</h3>
+        <table class="table">
+            <thead><tr><th>Component</th><th>Explains</th><th>Cumulative</th></tr></thead>
+            <tbody>
+                <tr><td>PC1</td><td>26.8%</td><td>26.8%</td></tr>
+                <tr><td>PC2</td><td>15.05%</td><td>41.85%</td></tr>
+                <tr><td>PC3</td><td>13.12%</td><td>54.97%</td></tr>
+                <tr><td>PC4</td><td>12.8%</td><td>67.77%</td></tr>
+                <tr><td>PC5</td><td>8.41%</td><td>76.18%</td></tr>
+                <tr><td>PC6</td><td>6.58%</td><td>82.76%</td></tr>
+                <tr><td>PC7</td><td>5.65%</td><td>88.41%</td></tr>
+                <tr><td>PC8</td><td>3.46%</td><td>91.87%</td></tr>
+                <tr><td>PC9</td><td>3.2%</td><td>95.07%</td></tr>
+                <tr><td>PC10</td><td>2.49%</td><td>97.56%</td></tr>
+            </tbody>
+        </table>
+        <h3 class="subsection-title">Column Loadings</h3>
+        <table class="table">
+            <thead><tr><th>Column</th><th>PC1 loading</th><th>PC2 loading</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>loan_amnt</td>
+                    <td>0.4572</td>
+                    <td>-0.0816</td>
+                </tr>
+                <tr>
+                    <td>int_rate</td>
+                    <td>0.0597</td>
+                    <td>-0.0952</td>
+                </tr>
+                <tr>
+                    <td>installment</td>
+                    <td>0.4486</td>
+                    <td>-0.0881</td>
+                </tr>
+                <tr>
+                    <td>annual_inc</td>
+                    <td>0.3694</td>
+                    <td>0.0555</td>
+                </tr>
+                <tr>
+                    <td>dti</td>
+                    <td>0.1031</td>
+                    <td>0.0154</td>
+                </tr>
+                <tr>
+                    <td>open_acc</td>
+                    <td>0.2908</td>
+                    <td>0.2964</td>
+                </tr>
+                <tr>
+                    <td>pub_rec</td>
+                    <td>-0.0972</td>
+                    <td>0.5434</td>
+                </tr>
+                <tr>
+                    <td>revol_bal</td>
+                    <td>0.3981</td>
+                    <td>-0.1103</td>
+                </tr>
+                <tr>
+                    <td>revol_util</td>
+                    <td>0.1095</td>
+                    <td>-0.3024</td>
+                </tr>
+                <tr>
+                    <td>total_acc</td>
+                    <td>0.3159</td>
+                    <td>0.3715</td>
+                </tr>
+                <tr>
+                    <td>mort_acc</td>
+                    <td>0.2486</td>
+                    <td>0.2004</td>
+                </tr>
+                <tr>
+                    <td>pub_rec_bankruptcies</td>
+                    <td>-0.1136</td>
+                    <td>0.5551</td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="section-title" id="cleaning">✨ Data Cleaning Log</h2>
+        <div class="summary-grid">
+            <div class="stat-box"><div class="stat-value">1</div><div class="stat-label">structured cleaning entries</div></div>
+            <div class="stat-box"><div class="stat-value">0</div><div class="stat-label">Clean Assist commands</div></div>
+        </div>
+        <div class="cleaning-item">
+            <span class="cleaning-type">Structured clean</span><br>
+            ✓ Filled 38,606 missing numeric value(s) with median.
+        </div>
+        <h2 class="section-title" id="updated-preview">✅ Updated Data (First 15 Rows)</h2>
+        <div class="data-preview">
+            <table class="table">
+                <thead><tr>
+<th>loan_amnt</th>
+<th>term</th>
+<th>int_rate</th>
+<th>installment</th>
+<th>grade</th>
+<th>sub_grade</th>
+<th>emp_title</th>
+<th>emp_length</th>
+<th>home_ownership</th>
+<th>annual_inc</th>
+<th>verification_status</th>
+<th>issue_d</th>
+<th>loan_status</th>
+<th>purpose</th>
+<th>title</th>
+<th>dti</th>
+<th>earliest_cr_line</th>
+<th>open_acc</th>
+<th>pub_rec</th>
+<th>revol_bal</th>
+<th>revol_util</th>
+<th>total_acc</th>
+<th>initial_list_status</th>
+<th>application_type</th>
+<th>mort_acc</th>
+<th>pub_rec_bankruptcies</th>
+<th>address</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+<td>1e+04</td>
+<td> 36 months</td>
+<td>11.44</td>
+<td>329.5</td>
+<td>B</td>
+<td>B4</td>
+<td>Marketing</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>1.17e+05</td>
+<td>Not Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>vacation</td>
+<td>Vacation</td>
+<td>26.24</td>
+<td>Jun-1990</td>
+<td>16</td>
+<td>0</td>
+<td>3.637e+04</td>
+<td>41.8</td>
+<td>25</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>0174 Michelle Gateway Mendozaberg, OK 22690</td>
+                    </tr>
+                    <tr>
+<td>8,000</td>
+<td> 36 months</td>
+<td>11.99</td>
+<td>265.7</td>
+<td>B</td>
+<td>B5</td>
+<td>Credit analyst </td>
+<td>4 years</td>
+<td>MORTGAGE</td>
+<td>6.5e+04</td>
+<td>Not Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>22.05</td>
+<td>Jul-2004</td>
+<td>17</td>
+<td>0</td>
+<td>2.013e+04</td>
+<td>53.3</td>
+<td>27</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>1076 Carney Fort Apt. 347 Loganmouth, SD 05113</td>
+                    </tr>
+                    <tr>
+<td>1.56e+04</td>
+<td> 36 months</td>
+<td>10.49</td>
+<td>507</td>
+<td>B</td>
+<td>B3</td>
+<td>Statistician</td>
+<td>&lt; 1 year</td>
+<td>RENT</td>
+<td>4.306e+04</td>
+<td>Source Verified</td>
+<td>Jan-2015</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>12.79</td>
+<td>Aug-2007</td>
+<td>13</td>
+<td>0</td>
+<td>1.199e+04</td>
+<td>92.2</td>
+<td>26</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>87025 Mark Dale Apt. 269 New Sabrina, WV 05113</td>
+                    </tr>
+                    <tr>
+<td>7,200</td>
+<td> 36 months</td>
+<td>6.49</td>
+<td>220.6</td>
+<td>A</td>
+<td>A2</td>
+<td>Client Advocate</td>
+<td>6 years</td>
+<td>RENT</td>
+<td>5.4e+04</td>
+<td>Not Verified</td>
+<td>Nov-2014</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>2.6</td>
+<td>Sep-2006</td>
+<td>6</td>
+<td>0</td>
+<td>5,472</td>
+<td>21.5</td>
+<td>13</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>823 Reid Ford Delacruzside, MA 00813</td>
+                    </tr>
+                    <tr>
+<td>2.438e+04</td>
+<td> 60 months</td>
+<td>17.27</td>
+<td>609.3</td>
+<td>C</td>
+<td>C5</td>
+<td>Destiny Management Inc.</td>
+<td>9 years</td>
+<td>MORTGAGE</td>
+<td>5.5e+04</td>
+<td>Verified</td>
+<td>Apr-2013</td>
+<td>Charged Off</td>
+<td>credit_card</td>
+<td>Credit Card Refinance</td>
+<td>33.95</td>
+<td>Mar-1999</td>
+<td>13</td>
+<td>0</td>
+<td>2.458e+04</td>
+<td>69.8</td>
+<td>43</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>1</td>
+<td>0</td>
+<td>679 Luna Roads Greggshire, VA 11650</td>
+                    </tr>
+                    <tr>
+<td>2e+04</td>
+<td> 36 months</td>
+<td>13.33</td>
+<td>677.1</td>
+<td>C</td>
+<td>C3</td>
+<td>HR Specialist</td>
+<td>10+ years</td>
+<td>MORTGAGE</td>
+<td>8.679e+04</td>
+<td>Verified</td>
+<td>Sep-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>16.31</td>
+<td>Jan-2005</td>
+<td>8</td>
+<td>0</td>
+<td>2.576e+04</td>
+<td>100.6</td>
+<td>23</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>0</td>
+<td>1726 Cooper Passage Suite 129 North Deniseberg, DE 30723</td>
+                    </tr>
+                    <tr>
+<td>1.8e+04</td>
+<td> 36 months</td>
+<td>5.32</td>
+<td>542.1</td>
+<td>A</td>
+<td>A1</td>
+<td>Software Development Engineer</td>
+<td>2 years</td>
+<td>MORTGAGE</td>
+<td>1.25e+05</td>
+<td>Source Verified</td>
+<td>Sep-2015</td>
+<td>Fully Paid</td>
+<td>home_improvement</td>
+<td>Home improvement</td>
+<td>1.36</td>
+<td>Aug-2005</td>
+<td>8</td>
+<td>0</td>
+<td>4,178</td>
+<td>4.9</td>
+<td>25</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>1008 Erika Vista Suite 748 East Stephanie, TX 22690</td>
+                    </tr>
+                    <tr>
+<td>1.3e+04</td>
+<td> 36 months</td>
+<td>11.14</td>
+<td>426.5</td>
+<td>B</td>
+<td>B2</td>
+<td>Office Depot</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>4.6e+04</td>
+<td>Not Verified</td>
+<td>Sep-2012</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>No More Credit Cards</td>
+<td>26.87</td>
+<td>Sep-1994</td>
+<td>11</td>
+<td>0</td>
+<td>1.342e+04</td>
+<td>64.5</td>
+<td>15</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>0</td>
+<td>0</td>
+<td>USCGC Nunez FPO AE 30723</td>
+                    </tr>
+                    <tr>
+<td>1.89e+04</td>
+<td> 60 months</td>
+<td>10.99</td>
+<td>410.8</td>
+<td>B</td>
+<td>B3</td>
+<td>Application Architect</td>
+<td>10+ years</td>
+<td>RENT</td>
+<td>1.03e+05</td>
+<td>Verified</td>
+<td>Oct-2014</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>12.52</td>
+<td>Jun-1994</td>
+<td>13</td>
+<td>0</td>
+<td>1.864e+04</td>
+<td>32.9</td>
+<td>40</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>3</td>
+<td>0</td>
+<td>USCGC Tran FPO AP 22690</td>
+                    </tr>
+                    <tr>
+<td>2.63e+04</td>
+<td> 36 months</td>
+<td>16.29</td>
+<td>928.4</td>
+<td>C</td>
+<td>C5</td>
+<td>Regado Biosciences</td>
+<td>3 years</td>
+<td>MORTGAGE</td>
+<td>1.15e+05</td>
+<td>Verified</td>
+<td>Apr-2012</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt Consolidation</td>
+<td>23.69</td>
+<td>Dec-1997</td>
+<td>13</td>
+<td>0</td>
+<td>2.217e+04</td>
+<td>82.4</td>
+<td>37</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>1</td>
+<td>0</td>
+<td>3390 Luis Rue Mauricestad, VA 00813</td>
+                    </tr>
+                    <tr>
+<td>1e+04</td>
+<td> 36 months</td>
+<td>13.11</td>
+<td>337.5</td>
+<td>B</td>
+<td>B4</td>
+<td>Sodexo</td>
+<td>2 years</td>
+<td>RENT</td>
+<td>9.5e+04</td>
+<td>Verified</td>
+<td>Jun-2013</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt Consolidation</td>
+<td>12.04</td>
+<td>Dec-1990</td>
+<td>5</td>
+<td>1</td>
+<td>4,702</td>
+<td>64.4</td>
+<td>26</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>1</td>
+<td>40245 Cody Drives Bartlettfort, NM 00813</td>
+                    </tr>
+                    <tr>
+<td>3.5e+04</td>
+<td> 36 months</td>
+<td>14.64</td>
+<td>1,207</td>
+<td>C</td>
+<td>C3</td>
+<td>Director Bureau of Equipment Inventory</td>
+<td>8 years</td>
+<td>MORTGAGE</td>
+<td>1.3e+05</td>
+<td>Verified</td>
+<td>May-2014</td>
+<td>Fully Paid</td>
+<td>credit_card</td>
+<td>Credit card refinancing</td>
+<td>12.19</td>
+<td>May-1984</td>
+<td>30</td>
+<td>0</td>
+<td>6.04e+04</td>
+<td>18.7</td>
+<td>61</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>4</td>
+<td>0</td>
+<td>3126 Sean Dale Apt. 141 South Matthew, MS 00813</td>
+                    </tr>
+                    <tr>
+<td>7,500</td>
+<td> 36 months</td>
+<td>9.17</td>
+<td>239.1</td>
+<td>B</td>
+<td>B2</td>
+<td>Social Work/Care Manager</td>
+<td>7 years</td>
+<td>OWN</td>
+<td>5.5e+04</td>
+<td>Not Verified</td>
+<td>Dec-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>28.21</td>
+<td>Apr-1995</td>
+<td>13</td>
+<td>0</td>
+<td>1.784e+04</td>
+<td>54.9</td>
+<td>35</td>
+<td>w</td>
+<td>JOINT</td>
+<td>4</td>
+<td>0</td>
+<td>4173 David Extension West Beckyfort, MS 70466</td>
+                    </tr>
+                    <tr>
+<td>3.5e+04</td>
+<td> 60 months</td>
+<td>12.29</td>
+<td>783.7</td>
+<td>C</td>
+<td>C1</td>
+<td>Regional Counsel</td>
+<td>10+ years</td>
+<td>MORTGAGE</td>
+<td>1.57e+05</td>
+<td>Verified</td>
+<td>Apr-2015</td>
+<td>Fully Paid</td>
+<td>debt_consolidation</td>
+<td>Debt consolidation</td>
+<td>29.39</td>
+<td>Jan-1997</td>
+<td>17</td>
+<td>0</td>
+<td>6.04e+04</td>
+<td>94.9</td>
+<td>27</td>
+<td>w</td>
+<td>INDIVIDUAL</td>
+<td>2</td>
+<td>0</td>
+<td>3343 Wells Mews Shellychester, OR 29597</td>
+                    </tr>
+                    <tr>
+<td>2.598e+04</td>
+<td> 36 months</td>
+<td>6.62</td>
+<td>797.5</td>
+<td>A</td>
+<td>A2</td>
+<td>Pullman Regional Hospital</td>
+<td>9 years</td>
+<td>MORTGAGE</td>
+<td>6.5e+04</td>
+<td>Verified</td>
+<td>Oct-2012</td>
+<td>Fully Paid</td>
+<td>small_business</td>
+<td>Business</td>
+<td>9.18</td>
+<td>May-2001</td>
+<td>9</td>
+<td>0</td>
+<td>5,140</td>
+<td>7.2</td>
+<td>35</td>
+<td>f</td>
+<td>INDIVIDUAL</td>
+<td>6</td>
+<td>0</td>
+<td>0472 Weber Manors Apt. 660 Lake Andrew, NH 29597</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="report-meta" style="margin-top:8px;">Showing first 15 of 396,030 rows.</p>
+        </div>
+        <h2 class="section-title" id="training">🤖 Model Training Results</h2>
+        <p style="color:#6c757d;font-size:0.9em;">1 model(s) trained in this session.</p>
+        <div style="border:1px solid #dee2e6;border-radius:6px;padding:18px 20px;margin-bottom:20px;">
+        <h3 style="margin:0 0 6px;font-size:1.1em;">→ Predicts <strong>loan_status</strong> <span style="background:#198754;color:#fff;font-size:0.75em;padding:2px 8px;border-radius:3px;vertical-align:middle;">current</span></h3>
+        <p style="margin:0 0 12px;color:#6c757d;font-size:0.85em;">Current model — loan_status &nbsp;·&nbsp; Classification &nbsp;·&nbsp; Best: <strong>XGBoost (Fast)</strong></p>
+        <table class="table" style="margin-bottom:8px;">
+            <thead><tr><th>Model</th><th>Metrics</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>XGBoost (Fast) ⭐</strong></td>
+                    <td><strong>accuracy:</strong> 0.8805, <strong>f1_weighted:</strong> 0.8584, <strong>f1_macro:</strong> 0.7461, <strong>precision_weighted:</strong> 0.896, <strong>recall_weighted:</strong> 0.8805, <strong>per_class_recall:</strong> {'0': 0.3903, '1': 1.0}, <strong>roc_auc:</strong> 0.8941</td>
+                    <td>✓ Success</td>
+                </tr>
+                <tr>
+                    <td><strong>Linear Classifier (Fast)</strong></td>
+                    <td><strong>accuracy:</strong> 0.6845, <strong>f1_weighted:</strong> 0.717, <strong>f1_macro:</strong> 0.6423, <strong>precision_weighted:</strong> 0.8386, <strong>recall_weighted:</strong> 0.6845, <strong>per_class_recall:</strong> {'0': 0.8699, '1': 0.6393}, <strong>roc_auc:</strong> 0.8556</td>
+                    <td>✓ Success</td>
+                </tr>
+            </tbody></table>
+        <p style="font-size:0.82em;color:#6c757d;margin:0;"><strong>Features used:</strong> loan_amnt, term, int_rate, installment, grade, sub_grade, emp_title, emp_length, home_ownership, annual_inc, verification_status, issue_d, purpose, title, dti, earliest_cr_line, open_acc, pub_rec, revol_bal, revol_util, … (+6 more)</p>
+        <h4 style="margin:14px 0 8px;font-size:0.95em;">Feature Importance (Best Model)</h4>
+        <table class="table" style="font-size:0.88em;">
+            <thead><tr><th>Feature</th><th>Importance</th><th>Relative strength</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>11650</strong></td>
+                    <td>0.2104</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:100.0%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>86630</strong></td>
+                    <td>0.19</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:90.3%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>93700</strong></td>
+                    <td>0.1716</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:81.6%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>05113</strong></td>
+                    <td>0.0535</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:25.4%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>00813</strong></td>
+                    <td>0.0518</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:24.6%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>pca3</strong></td>
+                    <td>0.0473</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:22.5%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>term_ 36 months</strong></td>
+                    <td>0.0466</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:22.1%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>29597</strong></td>
+                    <td>0.0455</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:21.6%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>dpo</strong></td>
+                    <td>0.0399</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:19.0%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>grade_A</strong></td>
+                    <td>0.0347</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:16.5%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>grade_B</strong></td>
+                    <td>0.0282</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:13.4%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>pca4</strong></td>
+                    <td>0.0204</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:9.7%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>issue_d_May-2015</strong></td>
+                    <td>0.0104</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:4.9%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>home_ownership_RENT</strong></td>
+                    <td>0.0102</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:4.8%"></div></div></td>
+                </tr>
+                <tr>
+                    <td><strong>pca0</strong></td>
+                    <td>0.0084</td>
+                    <td><div class="importance-bar"><div class="importance-fill" style="width:4.0%"></div></div></td>
+                </tr>
+            </tbody></table>
+        </div>
+        <h2 class="section-title" id="predictions">🎯 Saved Predictions</h2>
+        <div class="prediction-item">
+            <div class="prediction-output">loan_status: Fully Paid</div>
+            <div class="prediction-meta">Current training · XGBoost (Fast) · 2026-09-02 00:05</div>
+            <div class="prediction-inputs"><strong>Inputs:</strong> loan_amnt: 10000; term: 36 months; int_rate: 11.44; installment: 329.5; grade: B; sub_grade: B4; emp_title: Marketing; emp_length: 10+ years; home_ownership: RENT; annual_inc: 117000; verification_status: Not Verified; issue_d: Jan-2015; purpose: vacation; title: vacation; dti: 26.24; earliest_cr_line: Jun-1990; open_acc: 16; pub_rec: 0; revol_bal: 36369; revol_util: 41.8; total_acc: 25; initial_list_status: w; application_type: INDIVIDUAL; mort_acc: 9; pub_rec_bankruptcies: 9; address: 0174 Michelle Gateway Mendozab…</div>
+            <div class="prediction-inputs"><strong>Note:</strong> Given loan_amnt=10000, term=36 months, int_rate=11.4399995803833, installment=329.4800109863281, grade=B, sub_grade=B4, emp_title=Marketing, emp_length=10+ years, home_ownership=RENT, annual_inc=117000, verification_status=Not Verified, issue_d=Jan-2015, purpose=vacation, title=vacation, dti=26.239999771118164, earliest_cr_line=Jun-1990, open_acc=16, pub_rec=0, revol_bal=36369, revol_util=41.79999923706055, total_acc=25, initial_list_status=w, application_type=INDIVIDUAL, mort_acc=9, pub_rec_bankruptcies=9, address=0174 Michelle Gateway Mendozab…, XGBoost (Fast) predicts &#x27;loan_status&#x27; = Fully Paid.</div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function copyReportLink() {
+            const link = window.location.href;
+            navigator.clipboard.writeText(link).then(() => {
+                showNotification('Report link copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this link:', link);
+            });
+        }
+
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'autods_report.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('HTML report downloaded!');
+        }
+
+        function copyChart(index) {
+            const canvas = document.getElementById(`chart_${index}`);
+            if (!canvas) {
+                showNotification('❌ Chart not found');
+                return;
+            }
+            
+            // Find the chart card container
+            const chartCard = canvas.closest('.chart-card');
+            if (!chartCard) {
+                showNotification('❌ Chart container not found');
+                return;
+            }
+            
+            // Method 1: Try to copy the entire chart card as an image using html2canvas approach
+            // Since we can't use external libraries, we'll create a downloadable link
+            try {
+                const dataUrl = canvas.toDataURL('image/png');
+                
+                // Create a temporary download link
+                const link = document.createElement('a');
+                link.download = `chart_${index + 1}.png`;
+                link.href = dataUrl;
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('✓ Chart downloaded! Check your downloads folder.');
+                
+                // Also try to copy to clipboard
+                copyToClipboard(dataUrl);
+                
+            } catch (err) {
+                console.error('Download failed:', err);
+                showNotification('❌ Failed to download. Please right-click the chart and select "Save image as..."');
+            }
+        }
+
+        function copyToClipboard(dataUrl) {
+            // Convert data URL to blob
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (navigator.clipboard && window.ClipboardItem) {
+                        try {
+                            const item = new ClipboardItem({ 'image/png': blob });
+                            return navigator.clipboard.write([item]);
+                        } catch (err) {
+                            console.log('Clipboard API not supported');
+                            return Promise.resolve();
+                        }
+                    }
+                    return Promise.resolve();
+                })
+                .then(() => {
+                    if (navigator.clipboard && window.ClipboardItem) {
+                        showNotification('✓ Chart also copied to clipboard! You can paste it now.');
+                    }
+                })
+                .catch(err => {
+                    console.log('Clipboard copy failed:', err);
+                });
+        }
+
+        function copyReportContent() {
+            // Create a simplified text version of the report
+            let textContent = 'AUTODS ANALYSIS REPORT
+';
+            textContent += '='.repeat(50) + '
+
+';
+            
+            // Extract title and metadata
+            const title = document.querySelector('.report-title')?.textContent || 'AutoDS Analysis Report';
+            const dataset = document.querySelector('.report-meta strong')?.parentElement?.textContent || '';
+            textContent += `${title}
+${dataset}
+
+`;
+            
+            // Extract all section titles and content
+            const sections = document.querySelectorAll('.section-title, .narrative-text p, .stat-box, .correlation-item, .cleaning-item, .prediction-item, .analysis-item');
+            sections.forEach(section => {
+                const text = section.textContent.trim();
+                if (text) {
+                    textContent += text + '
+
+';
+                }
+            });
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(textContent).then(() => {
+                showNotification('Report text copied to clipboard! You can paste it into Word, PowerPoint, or any document.');
+            }).catch(() => {
+                // Fallback: select all text
+                const range = document.createRange();
+                range.selectNode(document.body);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                showNotification('Text selected! Press Ctrl+C to copy.');
+            });
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #198754;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script>
+        const reportCharts = [{"title": "loan_amnt vs installment (scatter)", "reason": "", "type": "scatter", "x": "loan_amnt", "y": "installment", "x_label": "loan_amnt", "y_label": "installment", "caption": "Each dot is one row \u2014 'loan_amnt' on the X-axis vs 'installment' on the Y-axis. Showing a random sample of 600 of 396,030 rows.", "points": [{"x": 14000, "y": 329.3299865722656}, {"x": 6050, "y": 213.57000732421875}, {"x": 20775, "y": 753.5700073242188}, {"x": 6000, "y": 205.0399932861328}, {"x": 17450, "y": 588.8900146484375}, {"x": 16800, "y": 523.52001953125}, {"x": 12000, "y": 404.2699890136719}, {"x": 25000, "y": 771.8200073242188}, {"x": 10000, "y": 343.3900146484375}, {"x": 1525, "y": 49.209999084472656}, {"x": 6000, "y": 199.6300048828125}, {"x": 25000, "y": 773.2999877929688}, {"x": 9250, "y": 298.0899963378906}, {"x": 2000, "y": 67.7300033569336}, {"x": 16000, "y": 486.9700012207031}, {"x": 10575, "y": 380.0400085449219}, {"x": 24000, "y": 649.2899780273438}, {"x": 8000, "y": 266.17999267578125}, {"x": 9550, "y": 338.07000732421875}, {"x": 23500, "y": 530.97998046875}, {"x": 6500, "y": 217.11000061035156}, {"x": 20000, "y": 659.8099975585938}, {"x": 10000, "y": 342.2200012207031}, {"x": 20000, "y": 668.97998046875}, {"x": 15000, "y": 369.1700134277344}, {"x": 11000, "y": 420.95001220703125}, {"x": 31825, "y": 1108.0699462890625}, {"x": 2000, "y": 75.36000061035156}, {"x": 4225, "y": 140.5800018310547}, {"x": 8800, "y": 316.2099914550781}, {"x": 24000, "y": 632.1199951171875}, {"x": 9600, "y": 308.2799987792969}, {"x": 1400, "y": 48.939998626708984}, {"x": 11325, "y": 404.3399963378906}, {"x": 8000, "y": 288.29998779296875}, {"x": 5000, "y": 164.74000549316406}, {"x": 15000, "y": 494.2200012207031}, {"x": 9700, "y": 308.010009765625}, {"x": 25000, "y": 850.2000122070312}, {"x": 21700, "y": 495.75}, {"x": 13000, "y": 295.7300109863281}, {"x": 10000, "y": 307.0400085449219}, {"x": 1600, "y": 54.68000030517578}, {"x": 7000, "y": 215.7899932861328}, {"x": 30375, "y": 1000.780029296875}, {"x": 30000, "y": 723.3400268554688}, {"x": 15000, "y": 516.97998046875}, {"x": 5500, "y": 184.9199981689453}, {"x": 16000, "y": 543.2000122070312}, {"x": 5000, "y": 168.60000610351562}, {"x": 9000, "y": 303.2099914550781}, {"x": 5600, "y": 187.0500030517578}, {"x": 5000, "y": 163.6699981689453}, {"x": 2750, "y": 93.97000122070312}, {"x": 8000, "y": 258.7099914550781}, {"x": 21000, "y": 761.8400268554688}, {"x": 3400, "y": 109.30999755859375}, {"x": 26600, "y": 765.0800170898438}, {"x": 9000, "y": 281.6199951171875}, {"x": 8000, "y": 261.8800048828125}, {"x": 10000, "y": 332.1000061035156}, {"x": 10000, "y": 301.1499938964844}, {"x": 19525, "y": 424.42999267578125}, {"x": 5000, "y": 164.02999877929688}, {"x": 30000, "y": 871.77001953125}, {"x": 23500, "y": 810.6199951171875}, {"x": 6000, "y": 186.6699981689453}, {"x": 25000, "y": 891.2000122070312}, {"x": 30000, "y": 1034.6800537109375}, {"x": 12000, "y": 289.3399963378906}, {"x": 35000, "y": 619.8900146484375}, {"x": 20000, "y": 465.2699890136719}, {"x": 4000, "y": 129.75}, {"x": 12000, "y": 306.29998779296875}, {"x": 4750, "y": 162.72000122070312}, {"x": 4200, "y": 138.55999755859375}, {"x": 25000, "y": 615.8200073242188}, {"x": 18000, "y": 459.5400085449219}, {"x": 6000, "y": 199.6300048828125}, {"x": 18700, "y": 607.7100219726562}, {"x": 7575, "y": 264.8599853515625}, {"x": 14400, "y": 495.3900146484375}, {"x": 6450, "y": 234}, {"x": 13200, "y": 445.0799865722656}, {"x": 15875, "y": 544.8900146484375}, {"x": 9750, "y": 303.3399963378906}, {"x": 20000, "y": 540.9600219726562}, {"x": 14000, "y": 464.94000244140625}, {"x": 8875, "y": 303.7200012207031}, {"x": 2000, "y": 75.51000213623047}, {"x": 14000, "y": 459.2799987792969}, {"x": 12800, "y": 419}, {"x": 16000, "y": 498.5899963378906}, {"x": 15200, "y": 369.55999755859375}, {"x": 10000, "y": 342.2200012207031}, {"x": 30000, "y": 836.6099853515625}, {"x": 23000, "y": 754.52001953125}, {"x": 10000, "y": 366.7799987792969}, {"x": 10000, "y": 323.3800048828125}, {"x": 30000, "y": 1025.0400390625}, {"x": 2000, "y": 67.70999908447266}, {"x": 18825, "y": 658.219970703125}, {"x": 16000, "y": 531.3599853515625}, {"x": 19750, "y": 492.3299865722656}, {"x": 14000, "y": 449.8399963378906}, {"x": 9750, "y": 362.20001220703125}, {"x": 6400, "y": 219.77000427246094}, {"x": 12000, "y": 291.57000732421875}, {"x": 6725, "y": 234.14999389648438}, {"x": 39700, "y": 1440.239990234375}, {"x": 20000, "y": 746.4400024414062}, {"x": 12000, "y": 405.25}, {"x": 20000, "y": 625.719970703125}, {"x": 20000, "y": 658.47998046875}, {"x": 12000, "y": 365.2300109863281}, {"x": 25000, "y": 676.3400268554688}, {"x": 31000, "y": 1064.489990234375}, {"x": 24000, "y": 583.510009765625}, {"x": 15000, "y": 467.42999267578125}, {"x": 20000, "y": 478.1199951171875}, {"x": 35000, "y": 937.0599975585938}, {"x": 7200, "y": 244.97000122070312}, {"x": 17825, "y": 547.5999755859375}, {"x": 6075, "y": 155.10000610351562}, {"x": 11125, "y": 374.04998779296875}, {"x": 8525, "y": 327.57000732421875}, {"x": 10000, "y": 364.2900085449219}, {"x": 1950, "y": 69.08999633789062}, {"x": 6000, "y": 196.41000366210938}, {"x": 20425, "y": 674.030029296875}, {"x": 15000, "y": 488.5299987792969}, {"x": 25200, "y": 774.6199951171875}, {"x": 12000, "y": 279.1000061035156}, {"x": 6000, "y": 210.58999633789062}, {"x": 10000, "y": 343.239990234375}, {"x": 6500, "y": 220.11000061035156}, {"x": 3500, "y": 109.5}, {"x": 4800, "y": 159.41000366210938}, {"x": 22400, "y": 524.8200073242188}, {"x": 33400, "y": 866.239990234375}, {"x": 10000, "y": 359.3800048828125}, {"x": 27950, "y": 779.1199951171875}, {"x": 10050, "y": 375.0899963378906}, {"x": 25000, "y": 848.75}, {"x": 10500, "y": 269.7900085449219}, {"x": 10000, "y": 326.1600036621094}, {"x": 20000, "y": 656.1099853515625}, {"x": 17600, "y": 403.44000244140625}, {"x": 18000, "y": 472.1000061035156}, {"x": 25000, "y": 793.8400268554688}, {"x": 25000, "y": 793.8400268554688}, {"x": 35000, "y": 1207.300048828125}, {"x": 6000, "y": 187.1699981689453}, {"x": 8000, "y": 292.92999267578125}, {"x": 10000, "y": 363.989990234375}, {"x": 8000, "y": 204.85000610351562}, {"x": 7575, "y": 275.9200134277344}, {"x": 12250, "y": 413.4100036621094}, {"x": 7550, "y": 296.1700134277344}, {"x": 10200, "y": 363.6099853515625}, {"x": 16000, "y": 351.6499938964844}, {"x": 11625, "y": 292.489990234375}, {"x": 4000, "y": 130.94000244140625}, {"x": 16000, "y": 437.2799987792969}, {"x": 35000, "y": 869.6599731445312}, {"x": 1500, "y": 51.2599983215332}, {"x": 6000, "y": 168.25}, {"x": 9550, "y": 306.67999267578125}, {"x": 20000, "y": 689.8900146484375}, {"x": 8500, "y": 260.989990234375}, {"x": 8800, "y": 270.20001220703125}, {"x": 20000, "y": 677.260009765625}, {"x": 6000, "y": 208.91000366210938}, {"x": 13000, "y": 327.0899963378906}, {"x": 8400, "y": 277.20001220703125}, {"x": 12000, "y": 382.54998779296875}, {"x": 15000, "y": 516.0999755859375}, {"x": 24000, "y": 572.219970703125}, {"x": 17475, "y": 565.1900024414062}, {"x": 21600, "y": 532.0700073242188}, {"x": 18000, "y": 428.1300048828125}, {"x": 6500, "y": 203.38999938964844}, {"x": 25000, "y": 658.4600219726562}, {"x": 15000, "y": 516.25}, {"x": 18000, "y": 449.9700012207031}, {"x": 12000, "y": 308.3299865722656}, {"x": 15000, "y": 351.1300048828125}, {"x": 12225, "y": 358.75}, {"x": 8000, "y": 269.5199890136719}, {"x": 8000, "y": 261.8800048828125}, {"x": 9000, "y": 281.6199951171875}, {"x": 33600, "y": 1078.97998046875}, {"x": 15000, "y": 330.1199951171875}, {"x": 20000, "y": 635.0700073242188}, {"x": 2800, "y": 103.66000366210938}, {"x": 7500, "y": 237.35000610351562}, {"x": 5000, "y": 169.27000427246094}, {"x": 12000, "y": 417.80999755859375}, {"x": 35000, "y": 802.2899780273438}, {"x": 18225, "y": 625.8200073242188}, {"x": 24000, "y": 735.469970703125}, {"x": 10000, "y": 322.6300048828125}, {"x": 14000, "y": 436.260009765625}, {"x": 14050, "y": 456.6000061035156}, {"x": 6000, "y": 190.52000427246094}, {"x": 20000, "y": 689.7899780273438}, {"x": 34775, "y": 1010.530029296875}, {"x": 5000, "y": 181.38999938964844}, {"x": 9700, "y": 326.1400146484375}, {"x": 10000, "y": 332.7200012207031}, {"x": 20000, "y": 645.25}, {"x": 10000, "y": 322.6300048828125}, {"x": 4800, "y": 158.27000427246094}, {"x": 20000, "y": 652.4099731445312}, {"x": 22075, "y": 740.510009765625}, {"x": 22000, "y": 506.1099853515625}, {"x": 15000, "y": 540.5599975585938}, {"x": 28000, "y": 981.6400146484375}, {"x": 17000, "y": 424.9700012207031}, {"x": 20000, "y": 520.9099731445312}, {"x": 16000, "y": 410.5799865722656}, {"x": 10000, "y": 332.1000061035156}, {"x": 8200, "y": 282.82000732421875}, {"x": 21000, "y": 687.4199829101562}, {"x": 5000, "y": 166.36000061035156}, {"x": 12000, "y": 306.3599853515625}, {"x": 14000, "y": 316.3299865722656}, {"x": 25000, "y": 696.8900146484375}, {"x": 18000, "y": 646.8699951171875}, {"x": 28000, "y": 889.0900268554688}, {"x": 28000, "y": 708.8900146484375}, {"x": 18600, "y": 503.20001220703125}, {"x": 4000, "y": 132.83999633789062}, {"x": 30000, "y": 754.8099975585938}, {"x": 12000, "y": 398.5199890136719}, {"x": 35000, "y": 984.6599731445312}, {"x": 4000, "y": 134.3800048828125}, {"x": 11225, "y": 322.8599853515625}, {"x": 11200, "y": 283.55999755859375}, {"x": 18000, "y": 580.72998046875}, {"x": 18000, "y": 547.8400268554688}, {"x": 7200, "y": 228.6300048828125}, {"x": 16000, "y": 543.2000122070312}, {"x": 19000, "y": 698.780029296875}, {"x": 1500, "y": 51.029998779296875}, {"x": 12000, "y": 408.1000061035156}, {"x": 22000, "y": 725.7899780273438}, {"x": 15000, "y": 466.5299987792969}, {"x": 6400, "y": 230.61000061035156}, {"x": 24000, "y": 808.5399780273438}, {"x": 10200, "y": 329.8500061035156}, {"x": 8000, "y": 270.9100036621094}, {"x": 16000, "y": 498.5899963378906}, {"x": 6600, "y": 203.5500030517578}, {"x": 14475, "y": 527.3099975585938}, {"x": 17850, "y": 618.6900024414062}, {"x": 3500, "y": 111.55999755859375}, {"x": 13225, "y": 453.92999267578125}, {"x": 25000, "y": 581.5800170898438}, {"x": 30000, "y": 890.5999755859375}, {"x": 13000, "y": 323.0199890136719}, {"x": 15000, "y": 503.5}, {"x": 9000, "y": 280.4599914550781}, {"x": 24000, "y": 322.8900146484375}, {"x": 14400, "y": 489.8599853515625}, {"x": 10000, "y": 346.6099853515625}, {"x": 11200, "y": 384.42999267578125}, {"x": 35000, "y": 1084.8699951171875}, {"x": 3600, "y": 128.83999633789062}, {"x": 2500, "y": 97.69000244140625}, {"x": 15000, "y": 343.8399963378906}, {"x": 24000, "y": 676.4400024414062}, {"x": 10000, "y": 383.7200012207031}, {"x": 8500, "y": 269}, {"x": 15000, "y": 491.010009765625}, {"x": 9000, "y": 294.6099853515625}, {"x": 10000, "y": 342.8500061035156}, {"x": 8000, "y": 282.4100036621094}, {"x": 6000, "y": 206.02999877929688}, {"x": 3500, "y": 115.37000274658203}, {"x": 6500, "y": 202.4600067138672}, {"x": 15000, "y": 379.760009765625}, {"x": 9000, "y": 307.55999755859375}, {"x": 11325, "y": 432.45001220703125}, {"x": 28000, "y": 651.22998046875}, {"x": 21600, "y": 450.05999755859375}, {"x": 12000, "y": 271.1400146484375}, {"x": 10500, "y": 353.739990234375}, {"x": 8875, "y": 313.29998779296875}, {"x": 20000, "y": 672.4400024414062}, {"x": 10000, "y": 349.6499938964844}, {"x": 12000, "y": 404.9700012207031}, {"x": 3200, "y": 110.9000015258789}, {"x": 2600, "y": 79.13999938964844}, {"x": 15000, "y": 364.4599914550781}, {"x": 12000, "y": 378.760009765625}, {"x": 25000, "y": 521.030029296875}, {"x": 22275, "y": 797.1699829101562}, {"x": 13300, "y": 442.07000732421875}, {"x": 3500, "y": 107.47000122070312}, {"x": 13000, "y": 404.3299865722656}, {"x": 9000, "y": 281.5799865722656}, {"x": 15000, "y": 483.94000244140625}, {"x": 25000, "y": 559.7899780273438}, {"x": 25000, "y": 774.9099731445312}, {"x": 6000, "y": 212.5800018310547}, {"x": 8000, "y": 256.8999938964844}, {"x": 10000, "y": 336.8999938964844}, {"x": 19200, "y": 549.6799926757812}, {"x": 16000, "y": 523.75}, {"x": 5075, "y": 182.38999938964844}, {"x": 8500, "y": 264.42999267578125}, {"x": 10500, "y": 337.3800048828125}, {"x": 1500, "y": 50.029998779296875}, {"x": 7000, "y": 168.6699981689453}, {"x": 8200, "y": 290.5199890136719}, {"x": 5000, "y": 160.4499969482422}, {"x": 4500, "y": 144.50999450683594}, {"x": 35000, "y": 1282.7900390625}, {"x": 4000, "y": 147.67999267578125}, {"x": 6000, "y": 190.52000427246094}, {"x": 13600, "y": 278.9599914550781}, {"x": 24000, "y": 533.75}, {"x": 9575, "y": 331.8800048828125}, {"x": 5275, "y": 178.6300048828125}, {"x": 10200, "y": 240.7899932861328}, {"x": 30000, "y": 1051.760009765625}, {"x": 10000, "y": 332.7200012207031}, {"x": 35000, "y": 1125.2900390625}, {"x": 27200, "y": 768.8200073242188}, {"x": 5000, "y": 166.36000061035156}, {"x": 6000, "y": 208.91000366210938}, {"x": 18000, "y": 571.5599975585938}, {"x": 16000, "y": 502.7200012207031}, {"x": 18000, "y": 428.1300048828125}, {"x": 30000, "y": 1078.1199951171875}, {"x": 6400, "y": 203.22999572753906}, {"x": 8000, "y": 250.3300018310547}, {"x": 15400, "y": 481.79998779296875}, {"x": 33525, "y": 1343.0799560546875}, {"x": 20400, "y": 667.780029296875}, {"x": 12000, "y": 396.69000244140625}, {"x": 10850, "y": 387.5899963378906}, {"x": 35000, "y": 950.4199829101562}, {"x": 25000, "y": 662.2100219726562}, {"x": 20000, "y": 683.4600219726562}, {"x": 20000, "y": 637.5800170898438}, {"x": 6000, "y": 199.25999450683594}, {"x": 10000, "y": 335.4100036621094}, {"x": 18600, "y": 432.70001220703125}, {"x": 2000, "y": 76.58999633789062}, {"x": 18325, "y": 609.7100219726562}, {"x": 10300, "y": 268.44000244140625}, {"x": 21000, "y": 639.1500244140625}, {"x": 19625, "y": 623.1599731445312}, {"x": 7200, "y": 224.60000610351562}, {"x": 7000, "y": 236.47000122070312}, {"x": 4550, "y": 158.4199981689453}, {"x": 22000, "y": 573.6099853515625}, {"x": 12000, "y": 399.8999938964844}, {"x": 35000, "y": 921.8499755859375}, {"x": 5000, "y": 164.86000061035156}, {"x": 35000, "y": 826.239990234375}, {"x": 3700, "y": 123.11000061035156}, {"x": 24000, "y": 500.07000732421875}, {"x": 16500, "y": 550.3300170898438}, {"x": 6000, "y": 203.1199951171875}, {"x": 11000, "y": 353.45001220703125}, {"x": 5000, "y": 164.86000061035156}, {"x": 17000, "y": 524.6799926757812}, {"x": 16500, "y": 555.8800048828125}, {"x": 10000, "y": 321.32000732421875}, {"x": 6000, "y": 209.7899932861328}, {"x": 24500, "y": 819.5}, {"x": 2600, "y": 94.63999938964844}, {"x": 22000, "y": 607.3699951171875}, {"x": 10000, "y": 323.3800048828125}, {"x": 4000, "y": 134.24000549316406}, {"x": 6000, "y": 180.69000244140625}, {"x": 12000, "y": 321.2799987792969}, {"x": 3600, "y": 118.7699966430664}, {"x": 6000, "y": 196.83999633789062}, {"x": 9000, "y": 301.9100036621094}, {"x": 17975, "y": 452.260009765625}, {"x": 10000, "y": 330.760009765625}, {"x": 29175, "y": 776.2100219726562}, {"x": 35000, "y": 802.2899780273438}, {"x": 9525, "y": 339.54998779296875}, {"x": 23825, "y": 570.6799926757812}, {"x": 10000, "y": 311.94000244140625}, {"x": 16000, "y": 584.47998046875}, {"x": 12000, "y": 399.260009765625}, {"x": 10025, "y": 289.0400085449219}, {"x": 7500, "y": 249.0800018310547}, {"x": 12000, "y": 417.80999755859375}, {"x": 8000, "y": 277.2900085449219}, {"x": 10000, "y": 315.1700134277344}, {"x": 5600, "y": 180.6699981689453}, {"x": 15600, "y": 495.3599853515625}, {"x": 8250, "y": 256.6700134277344}, {"x": 6500, "y": 208.6199951171875}, {"x": 17000, "y": 541.9500122070312}, {"x": 5600, "y": 181.10000610351562}, {"x": 14000, "y": 363.1000061035156}, {"x": 14400, "y": 334.989990234375}, {"x": 21000, "y": 644.780029296875}, {"x": 18000, "y": 580.72998046875}, {"x": 8250, "y": 294.54998779296875}, {"x": 4500, "y": 165.41000366210938}, {"x": 4950, "y": 164.6999969482422}, {"x": 12000, "y": 410.0799865722656}, {"x": 4000, "y": 132.83999633789062}, {"x": 21000, "y": 734.27001953125}, {"x": 3000, "y": 92.12000274658203}, {"x": 10000, "y": 349.6499938964844}, {"x": 10000, "y": 339.0199890136719}, {"x": 14000, "y": 458.2799987792969}, {"x": 10000, "y": 232.63999938964844}, {"x": 8500, "y": 291.6300048828125}, {"x": 16000, "y": 502.7200012207031}, {"x": 12000, "y": 404.9700012207031}, {"x": 21850, "y": 575.5}, {"x": 18000, "y": 593.3200073242188}, {"x": 29700, "y": 850.280029296875}, {"x": 15000, "y": 478.19000244140625}, {"x": 10000, "y": 353.010009765625}, {"x": 6000, "y": 206.41000366210938}, {"x": 5500, "y": 184.5}, {"x": 7925, "y": 288.70001220703125}, {"x": 8000, "y": 278.5400085449219}, {"x": 8000, "y": 287.5}, {"x": 28000, "y": 843.219970703125}, {"x": 4750, "y": 170.7100067138672}, {"x": 17000, "y": 549.8300170898438}, {"x": 6350, "y": 215.99000549316406}, {"x": 12000, "y": 392.80999755859375}, {"x": 16000, "y": 531.3599853515625}, {"x": 12000, "y": 417.80999755859375}, {"x": 9600, "y": 309.7200012207031}, {"x": 23000, "y": 622.0999755859375}, {"x": 24000, "y": 558.3200073242188}, {"x": 20000, "y": 581.1799926757812}, {"x": 15000, "y": 342.67999267578125}, {"x": 9600, "y": 318.82000732421875}, {"x": 12000, "y": 286.80999755859375}, {"x": 1800, "y": 56.33000183105469}, {"x": 2000, "y": 63.5099983215332}, {"x": 10050, "y": 275.8599853515625}, {"x": 15000, "y": 456.2699890136719}, {"x": 15000, "y": 505.2699890136719}, {"x": 28000, "y": 1010.3099975585938}, {"x": 6000, "y": 213.88999938964844}, {"x": 4500, "y": 165.07000732421875}, {"x": 23000, "y": 521.5599975585938}, {"x": 9000, "y": 263.5899963378906}, {"x": 19425, "y": 455.32000732421875}, {"x": 5600, "y": 180.0399932861328}, {"x": 6400, "y": 196.1300048828125}, {"x": 25000, "y": 610.6199951171875}, {"x": 26000, "y": 889.760009765625}, {"x": 23325, "y": 650.4600219726562}, {"x": 6200, "y": 207.38999938964844}, {"x": 24000, "y": 827.8699951171875}, {"x": 2500, "y": 91.91999816894531}, {"x": 1000, "y": 36.09000015258789}, {"x": 12000, "y": 429.45001220703125}, {"x": 35000, "y": 906.3800048828125}, {"x": 12000, "y": 373.94000244140625}, {"x": 12000, "y": 368.7799987792969}, {"x": 19200, "y": 677.2999877929688}, {"x": 13000, "y": 444.19000244140625}, {"x": 35000, "y": 912.1699829101562}, {"x": 10000, "y": 339.5}, {"x": 35000, "y": 917.969970703125}, {"x": 5000, "y": 179.69000244140625}, {"x": 14000, "y": 291.7799987792969}, {"x": 10250, "y": 338.8399963378906}, {"x": 10000, "y": 341.67999267578125}, {"x": 16000, "y": 376.3699951171875}, {"x": 7000, "y": 218.1300048828125}, {"x": 20000, "y": 485.0899963378906}, {"x": 20000, "y": 635.0700073242188}, {"x": 10000, "y": 337.4700012207031}, {"x": 20000, "y": 674.9400024414062}, {"x": 10000, "y": 344.07000732421875}, {"x": 3600, "y": 112.19000244140625}, {"x": 5825, "y": 215.64999389648438}, {"x": 23200, "y": 602.4600219726562}, {"x": 20000, "y": 699.2999877929688}, {"x": 25000, "y": 629.010009765625}, {"x": 8500, "y": 282.5299987792969}, {"x": 17000, "y": 596.6699829101562}, {"x": 16000, "y": 397.55999755859375}, {"x": 18250, "y": 653.1199951171875}, {"x": 5500, "y": 172.10000610351562}, {"x": 8000, "y": 273.3500061035156}, {"x": 12000, "y": 303.80999755859375}, {"x": 12800, "y": 419.9100036621094}, {"x": 14400, "y": 487.489990234375}, {"x": 5500, "y": 169.75}, {"x": 10000, "y": 365.29998779296875}, {"x": 35000, "y": 1111.3699951171875}, {"x": 1500, "y": 55.029998779296875}, {"x": 12300, "y": 443.260009765625}, {"x": 15000, "y": 509.25}, {"x": 20000, "y": 645.25}, {"x": 25000, "y": 745.5599975585938}, {"x": 8000, "y": 258.7099914550781}, {"x": 11700, "y": 389.2799987792969}, {"x": 19775, "y": 534.8699951171875}, {"x": 18000, "y": 661.8200073242188}, {"x": 8450, "y": 299.1300048828125}, {"x": 9600, "y": 349.42999267578125}, {"x": 5000, "y": 165.82000732421875}, {"x": 10000, "y": 312.8599853515625}, {"x": 4550, "y": 142.58999633789062}, {"x": 13675, "y": 318.1300048828125}, {"x": 22750, "y": 646.969970703125}, {"x": 21000, "y": 657.0999755859375}, {"x": 6550, "y": 225.42999267578125}, {"x": 5375, "y": 202.50999450683594}, {"x": 2500, "y": 95.68000030517578}, {"x": 15000, "y": 494.2200012207031}, {"x": 1000, "y": 32.58000183105469}, {"x": 22750, "y": 666.280029296875}, {"x": 26000, "y": 793.8099975585938}, {"x": 20000, "y": 693.2100219726562}, {"x": 9675, "y": 302.739990234375}, {"x": 12000, "y": 268.3399963378906}, {"x": 11000, "y": 377.1300048828125}, {"x": 25600, "y": 880.6799926757812}, {"x": 5800, "y": 182.24000549316406}, {"x": 16000, "y": 404.29998779296875}, {"x": 25000, "y": 598.8300170898438}, {"x": 10000, "y": 354.29998779296875}, {"x": 22000, "y": 538.4000244140625}, {"x": 8000, "y": 249.3000030517578}, {"x": 35000, "y": 547.4600219726562}, {"x": 21000, "y": 687.4199829101562}, {"x": 6000, "y": 201.27000427246094}, {"x": 20000, "y": 683.4600219726562}, {"x": 12000, "y": 393.6700134277344}, {"x": 18100, "y": 424.07000732421875}, {"x": 8000, "y": 255}, {"x": 15000, "y": 498.1499938964844}, {"x": 30000, "y": 794.6500244140625}, {"x": 10000, "y": 212.42999267578125}, {"x": 9700, "y": 328.4700012207031}, {"x": 10000, "y": 336.8999938964844}, {"x": 7500, "y": 239.10000610351562}, {"x": 35000, "y": 1227.050048828125}, {"x": 19200, "y": 407.8500061035156}, {"x": 3850, "y": 137.5399932861328}, {"x": 1500, "y": 51.02000045776367}, {"x": 1200, "y": 36.93000030517578}, {"x": 30000, "y": 754.8099975585938}, {"x": 30000, "y": 692.9299926757812}, {"x": 12000, "y": 368.45001220703125}, {"x": 6600, "y": 207.3699951171875}, {"x": 17000, "y": 627.6400146484375}, {"x": 9600, "y": 316.79998779296875}, {"x": 14400, "y": 476.0199890136719}, {"x": 37900, "y": 1236.3199462890625}, {"x": 6300, "y": 206.67999267578125}, {"x": 34550, "y": 1139.8199462890625}, {"x": 11000, "y": 247.42999267578125}, {"x": 21000, "y": 533.1500244140625}, {"x": 10000, "y": 330.57000732421875}, {"x": 3500, "y": 119.29000091552734}, {"x": 3000, "y": 100.5}, {"x": 15000, "y": 481.4100036621094}, {"x": 10800, "y": 388.1300048828125}, {"x": 20000, "y": 529.77001953125}, {"x": 11000, "y": 360.0799865722656}, {"x": 14400, "y": 489.7200012207031}, {"x": 8500, "y": 203.47000122070312}, {"x": 1950, "y": 66.62999725341797}, {"x": 18250, "y": 579.5}, {"x": 10000, "y": 332.1000061035156}, {"x": 25000, "y": 673.530029296875}, {"x": 20000, "y": 444.7900085449219}, {"x": 11625, "y": 453.8299865722656}, {"x": 2000, "y": 72.55000305175781}, {"x": 15000, "y": 462.4100036621094}, {"x": 24000, "y": 638.530029296875}, {"x": 10625, "y": 378.760009765625}, {"x": 12000, "y": 399.260009765625}, {"x": 11000, "y": 357.4800109863281}, {"x": 2750, "y": 102.19000244140625}, {"x": 25000, "y": 631.719970703125}, {"x": 19200, "y": 395.5}, {"x": 15000, "y": 529.510009765625}, {"x": 3175, "y": 110.05000305175781}, {"x": 35000, "y": 1176.77001953125}, {"x": 4000, "y": 137.36000061035156}, {"x": 2700, "y": 91.62000274658203}, {"x": 35000, "y": 1223.77001953125}, {"x": 19350, "y": 631.1199951171875}, {"x": 3525, "y": 141.64999389648438}, {"x": 24000, "y": 598.27001953125}], "_reportSource": "auto"}, {"title": "Distribution of term", "reason": "", "type": "pie", "x": "term", "caption": "Share of each category in 'term' \u2014 slice size = proportion of rows.", "labels": [" 36 months", " 60 months"], "values": [302005, 94025], "_reportSource": "auto"}, {"type": "histogram", "x": "loan_amnt", "x_min": null, "x_max": null, "bin_width": 5000, "x_label": "loan_amnt", "y_label": "Count", "caption": "Distribution of 'loan_amnt' across 396,030 values, split into 8 bars. Bar height = how many rows fall in that range.", "labels": ["500.00\u20135500.00", "5500.00\u201310500.00", "10500.00\u201315500.00", "15500.00\u201320500.00", "20500.00\u201325500.00", "25500.00\u201330500.00", "30500.00\u201335500.00", "35500.00\u201340500.00"], "values": [54345, 112957, 86056, 63423, 38527, 20547, 19918, 257], "title": "Histogram of loan_amnt", "reason": "Most loan_amnt values fall in the 5500.00\u201310500.00 range, with 112,957 record(s) in that bin.", "_reportSource": "custom"}, {"type": "bar", "x": "grade", "y": "loan_amnt", "group": "loan_status", "x_label": "grade", "y_label": "loan_amnt", "caption": "Sum of 'loan_amnt' for each 'grade', split by 'loan_status'.", "labels": ["A", "B", "C", "D", "E", "F", "G"], "series": [{"name": "Fully Paid", "values": [801457024, 1306686080, 1144222848, 653416896, 346675616, 128361728, 33797700]}, {"name": "Charged Off", "values": [51892100, 189448528, 314299936, 280093856, 211404944, 97796128, 29969676]}], "sampled": false, "total_points": 7, "shown_points": 7, "truncated_groups": false, "title": "loan_amnt by grade and loan_status", "reason": "Sum of 'loan_amnt' for each 'grade', split by 'loan_status'.", "_reportSource": "custom"}, {"type": "bar", "x": "purpose", "y_columns": ["loan_amnt"], "x_label": "purpose", "y_label": "Average value", "caption": "Average of loan_amnt for each 'purpose'.", "labels": ["car", "credit_card", "debt_consolidation", "educational", "home_improvement", "house", "major_purchase", "medical", "moving", "other", "renewable_energy", "small_business", "vacation", "wedding"], "series": [{"name": "loan_amnt", "values": [9938.8232421875, 15426.3662109375, 15744.2109375, 8530.9521484375, 15831.4169921875, 15093.7783203125, 13381.7509765625, 9865.9716796875, 8612.201171875, 10735.716796875, 11764.6103515625, 16482.5625, 8055.3876953125, 11271.232421875]}], "sampled": false, "total_points": 14, "shown_points": 14, "filter_col": "loan_status", "filter_values": ["Charged Off"], "title": "loan_amnt by purpose", "reason": "Average of loan_amnt for each 'purpose'.", "_reportSource": "custom"}, {"type": "bar", "x": "purpose", "y": "loan_amnt", "group": "loan_status", "x_label": "purpose", "y_label": "loan_amnt", "caption": "Sum of 'loan_amnt' for each 'purpose', split by 'loan_status'.", "labels": ["car", "credit_card", "debt_consolidation", "educational", "home_improvement", "house", "major_purchase", "medical", "moving", "other", "renewable_energy", "small_business", "vacation", "wedding"], "series": [{"name": "Fully Paid", "values": [32324676, 988280832, 2723318528, 1394625, 274457664, 27334124, 76688448, 28586624, 16703325, 155723872, 2170875, 60048424, 11514350, 16071625]}, {"name": "Charged Off", "values": [6291275, 214025408, 765798400, 358300, 64703000, 6550700, 19376776, 8987900, 5770175, 48257048, 905875, 27674224, 3737700, 2468400]}], "sampled": false, "total_points": 14, "shown_points": 14, "truncated_groups": false, "title": "loan_amnt by purpose and loan_status", "reason": "Sum of 'loan_amnt' for each 'purpose', split by 'loan_status'.", "_reportSource": "custom"}, {"type": "pie", "x": "application_type", "caption": "Share of each category in 'application_type' \u2014 slice size = proportion of rows.", "labels": ["INDIVIDUAL", "JOINT", "DIRECT_PAY"], "values": [395319, 425, 286], "title": "Share of application_type", "reason": "INDIVIDUAL is the largest group in application_type, with 395,319 record(s) (99.8% of the shown values).", "_reportSource": "custom"}, {"type": "pie", "x": "application_type", "caption": "Share of each category in 'application_type' \u2014 slice size = proportion of rows.", "labels": ["JOINT", "DIRECT_PAY", "INDIVIDUAL"], "values": [425, 286, 0], "filter_col": "application_type", "filter_values": ["JOINT", "DIRECT_PAY"], "title": "Share of application_type", "reason": "JOINT is the largest group in application_type, with 425 record(s) (59.8% of the shown values).", "_reportSource": "custom"}, {"type": "bar", "x": "verification_status", "y": "loan_amnt", "group": "loan_status", "x_label": "verification_status", "y_label": "loan_amnt", "caption": "Sum of 'loan_amnt' for each 'verification_status', split by 'loan_status'.", "labels": ["Not Verified", "Source Verified", "Verified"], "series": [{"name": "Fully Paid", "values": [1105507584, 1503394304, 1805715968]}, {"name": "Charged Off", "values": [197260928, 436489248, 541155008]}], "sampled": false, "total_points": 3, "shown_points": 3, "truncated_groups": false, "title": "loan_amnt by verification_status and loan_status", "reason": "Sum of 'loan_amnt' for each 'verification_status', split by 'loan_status'.", "_reportSource": "custom"}, {"type": "bubble", "x": "loan_amnt", "y": "annual_inc", "size": "int_rate", "x_label": "loan_amnt", "y_label": "annual_inc", "caption": "'loan_amnt' vs 'annual_inc', with bubble size showing 'int_rate'. Showing a random sample of 400 of 396,030 rows.", "points": [{"x": 14000, "y": 80000, "r": 13.167966842651367}, {"x": 6050, "y": 20400, "r": 15.163861274719238}, {"x": 20775, "y": 65000, "r": 17.32607650756836}, {"x": 6000, "y": 38848, "r": 12.61355209350586}, {"x": 17450, "y": 65000, "r": 11.637782096862793}, {"x": 16800, "y": 99000, "r": 5.550307273864746}, {"x": 12000, "y": 80000, "r": 11.504722595214844}, {"x": 25000, "y": 175000, "r": 4.851744651794434}, {"x": 10000, "y": 140000, "r": 12.990554809570312}, {"x": 1525, "y": 15000, "r": 8.178234100341797}, {"x": 6000, "y": 50000, "r": 10.540040969848633}, {"x": 25000, "y": 65000, "r": 4.995892524719238}, {"x": 9250, "y": 90000, "r": 8.089527130126953}, {"x": 2000, "y": 75000, "r": 11.903902053833008}, {"x": 16000, "y": 150000, "r": 3.787269115447998}, {"x": 10575, "y": 39360, "r": 16.583162307739258}, {"x": 24000, "y": 79000, "r": 20.38644790649414}, {"x": 8000, "y": 77564, "r": 10.540040969848633}, {"x": 9550, "y": 32000, "r": 15.385625839233398}, {"x": 23500, "y": 60000, "r": 11.172073364257812}, {"x": 6500, "y": 70000, "r": 10.839425086975098}, {"x": 20000, "y": 57000, "r": 9.885830879211426}, {"x": 10000, "y": 34000, "r": 12.724435806274414}, {"x": 20000, "y": 96000, "r": 10.950307846069336}, {"x": 15000, "y": 37000, "r": 15.452155113220215}, {"x": 11000, "y": 40000, "r": 21.661602020263672}, {"x": 31825, "y": 80000, "r": 14.0772066116333}, {"x": 2000, "y": 70000, "r": 20.38644790649414}, {"x": 4225, "y": 60000, "r": 10.540040969848633}, {"x": 8800, "y": 74000, "r": 16.572072982788086}, {"x": 24000, "y": 100000, "r": 18.967144012451172}, {"x": 9600, "y": 54800, "r": 7.823408603668213}, {"x": 1400, "y": 38700, "r": 14.387680053710938}, {"x": 11325, "y": 50000, "r": 16.062013626098633}, {"x": 8000, "y": 32000, "r": 16.804927825927734}, {"x": 5000, "y": 25152, "r": 9.786036491394043}, {"x": 15000, "y": 170000, "r": 9.786036491394043}, {"x": 9700, "y": 89000, "r": 6.969609260559082}, {"x": 25000, "y": 84000, "r": 12.236550331115723}, {"x": 21700, "y": 50700, "r": 11.715400695800781}, {"x": 13000, "y": 65000, "r": 11.504722595214844}, {"x": 10000, "y": 55000, "r": 4.4414777755737305}, {"x": 1600, "y": 21600, "r": 12.61355209350586}, {"x": 7000, "y": 130000, "r": 4.740861892700195}, {"x": 30375, "y": 188000, "r": 9.786036491394043}, {"x": 30000, "y": 70000, "r": 14.409855842590332}, {"x": 15000, "y": 75600, "r": 13.278850555419922}, {"x": 5500, "y": 140000, "r": 11.3494873046875}, {"x": 16000, "y": 80000, "r": 12.103489875793457}, {"x": 5000, "y": 45000, "r": 11.571252822875977}, {"x": 9000, "y": 65000, "r": 11.504722595214844}, {"x": 5600, "y": 65000, "r": 10.839425086975098}, {"x": 5000, "y": 21000, "r": 9.287063598632812}, {"x": 2750, "y": 34000, "r": 12.602463722229004}, {"x": 8000, "y": 53000, "r": 8.355646133422852}, {"x": 21000, "y": 105000, "r": 17.33716583251953}, {"x": 3400, "y": 45000, "r": 7.91211462020874}, {"x": 26600, "y": 64000, "r": 23.701847076416016}, {"x": 9000, "y": 56000, "r": 5.860779762268066}, {"x": 8000, "y": 40000, "r": 9.287063598632812}, {"x": 10000, "y": 51000, "r": 10.395893096923828}, {"x": 10000, "y": 85000, "r": 3}, {"x": 19525, "y": 44000, "r": 9.287063598632812}, {"x": 5000, "y": 25000, "r": 9.453388214111328}, {"x": 30000, "y": 160000, "r": 24.267349243164062}, {"x": 23500, "y": 40000, "r": 13.345379829406738}, {"x": 6000, "y": 102996, "r": 5.428337097167969}, {"x": 25000, "y": 52000, "r": 15.940040588378906}, {"x": 30000, "y": 120000, "r": 13.334290504455566}, {"x": 12000, "y": 60000, "r": 14.409855842590332}, {"x": 35000, "y": 88000, "r": 19.554826736450195}, {"x": 20000, "y": 65000, "r": 12.61355209350586}, {"x": 4000, "y": 25000, "r": 8.5885009765625}, {"x": 12000, "y": 40000, "r": 17.32607650756836}, {"x": 4750, "y": 55000, "r": 12.802053451538086}, {"x": 4200, "y": 31000, "r": 9.885830879211426}, {"x": 25000, "y": 62500, "r": 15.496509552001953}, {"x": 18000, "y": 91000, "r": 17.33716583251953}, {"x": 6000, "y": 41000, "r": 10.540040969848633}, {"x": 18700, "y": 80000, "r": 8.732648849487305}, {"x": 7575, "y": 33100, "r": 14.409855842590332}, {"x": 14400, "y": 80000, "r": 13.1347017288208}, {"x": 6450, "y": 50000, "r": 17.33716583251953}, {"x": 13200, "y": 39000, "r": 11.571252822875977}, {"x": 15875, "y": 71222, "r": 12.95728874206543}, {"x": 9750, "y": 46000, "r": 5.428337097167969}, {"x": 20000, "y": 148500, "r": 20.37535858154297}, {"x": 14000, "y": 75000, "r": 10.395893096923828}, {"x": 8875, "y": 25460, "r": 12.724435806274414}, {"x": 2000, "y": 40000, "r": 20.552772521972656}, {"x": 14000, "y": 125000, "r": 9.453388214111328}, {"x": 12800, "y": 90000, "r": 9.287063598632812}, {"x": 16000, "y": 105000, "r": 5.550307273864746}, {"x": 15200, "y": 38000, "r": 14.83121109008789}, {"x": 10000, "y": 65000, "r": 12.724435806274414}, {"x": 30000, "y": 95334, "r": 22.01642608642578}, {"x": 23000, "y": 60000, "r": 9.453388214111328}, {"x": 10000, "y": 96000, "r": 18.21314239501953}, {"x": 10000, "y": 30264, "r": 8.355646133422852}, {"x": 30000, "y": 115000, "r": 12.602463722229004}, {"x": 2000, "y": 115000, "r": 11.881725311279297}, {"x": 18825, "y": 45000, "r": 14.409855842590332}, {"x": 16000, "y": 98000, "r": 10.395893096923828}, {"x": 19750, "y": 82000, "r": 16.106365203857422}, {"x": 14000, "y": 225000, "r": 7.867761611938477}, {"x": 9750, "y": 49000, "r": 19.244352340698242}, {"x": 6400, "y": 189000, "r": 12.990554809570312}, {"x": 12000, "y": 64320, "r": 14.797945022583008}, {"x": 6725, "y": 38000, "r": 14.0772066116333}, {"x": 39700, "y": 81000, "r": 17.33716583251953}, {"x": 20000, "y": 95000, "r": 19.621355056762695}, {"x": 12000, "y": 85000, "r": 11.693222999572754}, {"x": 20000, "y": 66420, "r": 5.849691390991211}, {"x": 20000, "y": 55000, "r": 9.730595588684082}, {"x": 12000, "y": 120000, "r": 3.787269115447998}, {"x": 25000, "y": 70000, "r": 20.38644790649414}, {"x": 31000, "y": 70000, "r": 12.990554809570312}, {"x": 24000, "y": 225000, "r": 14.83121109008789}, {"x": 15000, "y": 75000, "r": 5.550307273864746}, {"x": 20000, "y": 93000, "r": 13.977412223815918}, {"x": 35000, "y": 85000, "r": 19.832033157348633}, {"x": 7200, "y": 28500, "r": 12.269815444946289}, {"x": 17825, "y": 83400, "r": 27.383161544799805}, {"x": 6075, "y": 28000, "r": 17.33716583251953}, {"x": 11125, "y": 25960, "r": 11.3494873046875}, {"x": 8525, "y": 70000, "r": 21.994251251220703}, {"x": 10000, "y": 75000, "r": 17.669815063476562}, {"x": 1950, "y": 18000, "r": 15.452155113220215}, {"x": 6000, "y": 35000, "r": 9.287063598632812}, {"x": 20425, "y": 54000, "r": 9.908008575439453}, {"x": 15000, "y": 75000, "r": 8.89897346496582}, {"x": 25200, "y": 60000, "r": 27.416427612304688}, {"x": 12000, "y": 75000, "r": 12.602463722229004}, {"x": 6000, "y": 63000, "r": 14.709239959716797}, {"x": 10000, "y": 35000, "r": 12.95728874206543}, {"x": 6500, "y": 41000, "r": 11.903902053833008}, {"x": 3500, "y": 60000, "r": 5.849691390991211}, {"x": 4800, "y": 124000, "r": 10.395893096923828}, {"x": 22400, "y": 111000, "r": 12.968377113342285}, {"x": 33400, "y": 225000, "r": 18.157699584960938}, {"x": 10000, "y": 65000, "r": 16.583162307739258}, {"x": 27950, "y": 77000, "r": 21.994251251220703}, {"x": 10050, "y": 100000, "r": 19.621355056762695}, {"x": 25000, "y": 105000, "r": 12.103489875793457}, {"x": 10500, "y": 75000, "r": 17.669815063476562}, {"x": 10000, "y": 85000, "r": 9.009856224060059}, {"x": 20000, "y": 120000, "r": 9.453388214111328}, {"x": 17600, "y": 90000, "r": 11.881725311279297}, {"x": 18000, "y": 40000, "r": 18.745380401611328}, {"x": 25000, "y": 79000, "r": 6.969609260559082}, {"x": 25000, "y": 66000, "r": 6.969609260559082}, {"x": 35000, "y": 100000, "r": 13.345379829406738}, {"x": 6000, "y": 40000, "r": 5.627925872802734}, {"x": 8000, "y": 43000, "r": 18.080081939697266}, {"x": 10000, "y": 42000, "r": 17.60328483581543}, {"x": 8000, "y": 50000, "r": 17.492401123046875}, {"x": 7575, "y": 40000, "r": 17.658727645874023}, {"x": 12250, "y": 48800, "r": 11.637782096862793}, {"x": 7550, "y": 30000, "r": 23.701847076416016}, {"x": 10200, "y": 54000, "r": 15.940040588378906}, {"x": 16000, "y": 68400, "r": 9.81930160522461}, {"x": 11625, "y": 43000, "r": 16.583162307739258}, {"x": 4000, "y": 42000, "r": 9.287063598632812}, {"x": 16000, "y": 60000, "r": 20.929773330688477}, {"x": 35000, "y": 90000, "r": 15.940040588378906}, {"x": 1500, "y": 44000, "r": 12.602463722229004}, {"x": 6000, "y": 31200, "r": 22.315811157226562}, {"x": 9550, "y": 56000, "r": 7.823408603668213}, {"x": 20000, "y": 110000, "r": 13.345379829406738}, {"x": 8500, "y": 40000, "r": 4.4414777755737305}, {"x": 8800, "y": 68000, "r": 4.4414777755737305}, {"x": 20000, "y": 110000, "r": 11.903902053833008}, {"x": 6000, "y": 39000, "r": 14.0772066116333}, {"x": 13000, "y": 55000, "r": 16.583162307739258}, {"x": 8400, "y": 55000, "r": 9.908008575439453}, {"x": 12000, "y": 65000, "r": 7.268993854522705}, {"x": 15000, "y": 150000, "r": 13.145790100097656}, {"x": 24000, "y": 104000, "r": 13.844354629516602}, {"x": 17475, "y": 44546, "r": 8.366734504699707}, {"x": 21600, "y": 55000, "r": 15.496509552001953}, {"x": 18000, "y": 45000, "r": 13.722381591796875}, {"x": 6500, "y": 35373, "r": 5.860779762268066}, {"x": 25000, "y": 92000, "r": 18.967144012451172}, {"x": 15000, "y": 41440, "r": 13.167966842651367}, {"x": 18000, "y": 60000, "r": 16.25051498413086}, {"x": 12000, "y": 151000, "r": 17.669815063476562}, {"x": 15000, "y": 44000, "r": 12.924025535583496}, {"x": 12225, "y": 34000, "r": 24.810678482055664}, {"x": 8000, "y": 33000, "r": 11.504722595214844}, {"x": 8000, "y": 51000, "r": 9.287063598632812}, {"x": 9000, "y": 55000, "r": 5.860779762268066}, {"x": 33600, "y": 84495.56, "r": 7.823408603668213}, {"x": 15000, "y": 41748, "r": 9.885830879211426}, {"x": 20000, "y": 92000, "r": 6.969609260559082}, {"x": 2800, "y": 30000, "r": 18.967144012451172}, {"x": 7500, "y": 50280, "r": 6.714578628540039}, {"x": 5000, "y": 36000, "r": 11.881725311279297}, {"x": 12000, "y": 60770, "r": 14.0772066116333}, {"x": 35000, "y": 100000, "r": 11.881725311279297}, {"x": 18225, "y": 55000, "r": 12.990554809570312}, {"x": 24000, "y": 133100, "r": 4.297329902648926}, {"x": 10000, "y": 100000, "r": 8.178234100341797}, {"x": 14000, "y": 104000, "r": 5.550307273864746}, {"x": 14050, "y": 57829, "r": 8.732648849487305}, {"x": 6000, "y": 60000, "r": 6.969609260559082}, {"x": 20000, "y": 73548, "r": 13.334290504455566}, {"x": 34775, "y": 83000, "r": 24.267349243164062}, {"x": 5000, "y": 90000, "r": 17.33716583251953}, {"x": 9700, "y": 30000, "r": 11.3494873046875}, {"x": 10000, "y": 46000, "r": 10.540040969848633}, {"x": 20000, "y": 90000, "r": 8.178234100341797}, {"x": 10000, "y": 60000, "r": 8.178234100341797}, {"x": 4800, "y": 85000, "r": 9.84147834777832}, {"x": 20000, "y": 165000, "r": 9.020944595336914}, {"x": 22075, "y": 48000, "r": 11.172073364257812}, {"x": 22000, "y": 49000, "r": 12.059137344360352}, {"x": 15000, "y": 96000, "r": 16.804927825927734}, {"x": 28000, "y": 100000, "r": 14.620532989501953}, {"x": 17000, "y": 76000, "r": 16.25051498413086}, {"x": 20000, "y": 64000, "r": 18.379467010498047}, {"x": 16000, "y": 94837, "r": 17.60328483581543}, {"x": 10000, "y": 51933.84, "r": 10.395893096923828}, {"x": 8200, "y": 150000, "r": 13.334290504455566}, {"x": 21000, "y": 150000, "r": 9.287063598632812}, {"x": 5000, "y": 40000, "r": 10.540040969848633}, {"x": 12000, "y": 36000, "r": 17.33716583251953}, {"x": 14000, "y": 35000, "r": 11.172073364257812}, {"x": 25000, "y": 78000, "r": 21.994251251220703}, {"x": 18000, "y": 135000, "r": 16.583162307739258}, {"x": 28000, "y": 110000, "r": 6.969609260559082}, {"x": 28000, "y": 101000, "r": 16.90472412109375}, {"x": 18600, "y": 46000, "r": 20.38644790649414}, {"x": 4000, "y": 53000, "r": 10.395893096923828}, {"x": 30000, "y": 90000, "r": 16.583162307739258}, {"x": 12000, "y": 41300, "r": 10.395893096923828}, {"x": 35000, "y": 141000, "r": 22.493223190307617}, {"x": 4000, "y": 34500, "r": 11.28295612335205}, {"x": 11225, "y": 38000, "r": 23.701847076416016}, {"x": 11200, "y": 62000, "r": 16.90472412109375}, {"x": 18000, "y": 40000, "r": 8.178234100341797}, {"x": 18000, "y": 100000, "r": 3.787269115447998}, {"x": 7200, "y": 42000, "r": 6.969609260559082}, {"x": 16000, "y": 74000, "r": 12.103489875793457}, {"x": 19000, "y": 86000, "r": 18.434906005859375}, {"x": 1500, "y": 36000, "r": 12.258727073669434}, {"x": 12000, "y": 130000, "r": 12.236550331115723}, {"x": 22000, "y": 59000, "r": 9.885830879211426}, {"x": 15000, "y": 35000, "r": 5.406159400939941}, {"x": 6400, "y": 29000, "r": 16.793838500976562}, {"x": 24000, "y": 121000, "r": 11.504722595214844}, {"x": 10200, "y": 132000, "r": 8.355646133422852}, {"x": 8000, "y": 79000, "r": 11.903902053833008}, {"x": 16000, "y": 75000, "r": 5.550307273864746}, {"x": 6600, "y": 51000, "r": 4.774127006530762}, {"x": 14475, "y": 48000, "r": 17.669815063476562}, {"x": 17850, "y": 49678.4, "r": 13.722381591796875}, {"x": 3500, "y": 65000, "r": 7.257905006408691}, {"x": 13225, "y": 45000, "r": 12.95728874206543}, {"x": 25000, "y": 75000, "r": 12.61355209350586}, {"x": 30000, "y": 86000, "r": 25.453798294067383}, {"x": 13000, "y": 43000, "r": 15.940040588378906}, {"x": 15000, "y": 100000, "r": 11.216425895690918}, {"x": 9000, "y": 58000, "r": 5.550307273864746}, {"x": 24000, "y": 48000, "r": 8.178234100341797}, {"x": 14400, "y": 62000, "r": 12.258727073669434}, {"x": 10000, "y": 45000, "r": 13.722381591796875}, {"x": 11200, "y": 72900, "r": 12.95728874206543}, {"x": 35000, "y": 104000, "r": 5.151129722595215}, {"x": 3600, "y": 82000, "r": 16.25051498413086}, {"x": 2500, "y": 36000, "r": 23.38028907775879}, {"x": 15000, "y": 130000, "r": 11.881725311279297}, {"x": 24000, "y": 73000, "r": 22.593017578125}, {"x": 10000, "y": 51000, "r": 21.88336753845215}, {"x": 8500, "y": 75000, "r": 6.714578628540039}, {"x": 15000, "y": 70000, "r": 9.287063598632812}, {"x": 9000, "y": 72000, "r": 9.287063598632812}, {"x": 10000, "y": 36000, "r": 12.868582725524902}, {"x": 8000, "y": 48000, "r": 15.163861274719238}, {"x": 6000, "y": 50000, "r": 12.990554809570312}, {"x": 3500, "y": 68000, "r": 9.81930160522461}, {"x": 6500, "y": 40000, "r": 5.517043113708496}, {"x": 15000, "y": 72000, "r": 16.90472412109375}, {"x": 9000, "y": 65000, "r": 12.61355209350586}, {"x": 11325, "y": 43400, "r": 21.484188079833984}, {"x": 28000, "y": 113000, "r": 12.602463722229004}, {"x": 21600, "y": 90000, "r": 7.257905006408691}, {"x": 12000, "y": 105000, "r": 11.172073364257812}, {"x": 10500, "y": 48000, "r": 11.504722595214844}, {"x": 8875, "y": 31000, "r": 15.163861274719238}, {"x": 20000, "y": 58000, "r": 11.3494873046875}, {"x": 10000, "y": 50000, "r": 14.409855842590332}, {"x": 12000, "y": 41600, "r": 11.637782096862793}, {"x": 3200, "y": 30000, "r": 13.711294174194336}, {"x": 2600, "y": 50000, "r": 3.787269115447998}, {"x": 15000, "y": 58000, "r": 14.797945022583008}, {"x": 12000, "y": 120000, "r": 6.514988899230957}, {"x": 25000, "y": 119000, "r": 7.268993854522705}, {"x": 22275, "y": 51000, "r": 16.25051498413086}, {"x": 13300, "y": 35000, "r": 10.462423324584961}, {"x": 3500, "y": 60785, "r": 4.4414777755737305}, {"x": 13000, "y": 48000, "r": 5.406159400939941}, {"x": 9000, "y": 60000, "r": 5.849691390991211}, {"x": 15000, "y": 74000, "r": 8.178234100341797}, {"x": 25000, "y": 95000, "r": 10.728541374206543}, {"x": 25000, "y": 108000, "r": 5.151129722595215}, {"x": 6000, "y": 28000, "r": 15.452155113220215}, {"x": 8000, "y": 85000, "r": 7.823408603668213}, {"x": 10000, "y": 35238.48, "r": 11.504722595214844}, {"x": 19200, "y": 58560, "r": 23.44681739807129}, {"x": 16000, "y": 53000, "r": 9.287063598632812}, {"x": 5075, "y": 53000, "r": 16.583162307739258}, {"x": 8500, "y": 32000, "r": 5.428337097167969}, {"x": 10500, "y": 75000, "r": 7.867761611938477}, {"x": 1500, "y": 70000, "r": 10.728541374206543}, {"x": 7000, "y": 93312, "r": 14.376591682434082}, {"x": 8200, "y": 35000, "r": 15.452155113220215}, {"x": 5000, "y": 65000, "r": 7.7679667472839355}, {"x": 4500, "y": 50000, "r": 7.823408603668213}, {"x": 35000, "y": 165000, "r": 18.157699584960938}, {"x": 4000, "y": 40638, "r": 18.745380401611328}, {"x": 6000, "y": 52800, "r": 6.969609260559082}, {"x": 13600, "y": 103000, "r": 6.514988899230957}, {"x": 24000, "y": 83000, "r": 10.395893096923828}, {"x": 9575, "y": 83000, "r": 13.722381591796875}, {"x": 5275, "y": 60000, "r": 11.903902053833008}, {"x": 10200, "y": 45000, "r": 13.345379829406738}, {"x": 30000, "y": 83000, "r": 14.620532989501953}, {"x": 10000, "y": 103020, "r": 10.540040969848633}, {"x": 35000, "y": 88600, "r": 30}, {"x": 27200, "y": 100890, "r": 22.748254776000977}, {"x": 5000, "y": 38000, "r": 10.540040969848633}, {"x": 6000, "y": 140000, "r": 14.0772066116333}, {"x": 18000, "y": 65000, "r": 6.969609260559082}, {"x": 16000, "y": 88000, "r": 6.171252250671387}, {"x": 18000, "y": 52000, "r": 13.722381591796875}, {"x": 30000, "y": 90000, "r": 16.583162307739258}, {"x": 6400, "y": 40000, "r": 6.969609260559082}, {"x": 8000, "y": 69000, "r": 5.860779762268066}, {"x": 15400, "y": 63000, "r": 5.849691390991211}, {"x": 33525, "y": 225000, "r": 25.453798294067383}, {"x": 20400, "y": 102000, "r": 9.287063598632812}, {"x": 12000, "y": 30000, "r": 10.041067123413086}, {"x": 10850, "y": 74400, "r": 16.106365203857422}, {"x": 35000, "y": 225000, "r": 20.58603858947754}, {"x": 25000, "y": 225000, "r": 19.266529083251953}, {"x": 20000, "y": 67700, "r": 12.61355209350586}, {"x": 20000, "y": 115000, "r": 7.268993854522705}, {"x": 6000, "y": 74838, "r": 10.395893096923828}, {"x": 10000, "y": 120000, "r": 11.160985946655273}, {"x": 18600, "y": 38000, "r": 12.61355209350586}, {"x": 2000, "y": 30000, "r": 21.717044830322266}, {"x": 18325, "y": 80000, "r": 10.540040969848633}, {"x": 10300, "y": 100000, "r": 18.412731170654297}, {"x": 21000, "y": 204000, "r": 3.787269115447998}, {"x": 19625, "y": 101920, "r": 6.969609260559082}, {"x": 7200, "y": 68640, "r": 5.627925872802734}, {"x": 7000, "y": 108000, "r": 11.715400695800781}, {"x": 4550, "y": 50000, "r": 14.0772066116333}, {"x": 22000, "y": 85000, "r": 18.434906005859375}, {"x": 12000, "y": 62500, "r": 10.66201114654541}, {"x": 35000, "y": 225000, "r": 18.967144012451172}, {"x": 5000, "y": 58000, "r": 9.84147834777832}, {"x": 35000, "y": 106000, "r": 13.345379829406738}, {"x": 3700, "y": 75000, "r": 10.540040969848633}, {"x": 24000, "y": 141000, "r": 7.257905006408691}, {"x": 16500, "y": 48000, "r": 10.728541374206543}, {"x": 6000, "y": 86660, "r": 11.881725311279297}, {"x": 11000, "y": 75000, "r": 7.867761611938477}, {"x": 5000, "y": 72000, "r": 9.84147834777832}, {"x": 17000, "y": 60000, "r": 4.829568386077881}, {"x": 16500, "y": 80000, "r": 11.504722595214844}, {"x": 10000, "y": 30000, "r": 7.867761611938477}, {"x": 6000, "y": 112000, "r": 14.409855842590332}, {"x": 24500, "y": 104000, "r": 10.950307846069336}, {"x": 2600, "y": 20000, "r": 17.60328483581543}, {"x": 22000, "y": 50000, "r": 21.473100662231445}, {"x": 10000, "y": 60000, "r": 8.355646133422852}, {"x": 4000, "y": 38850, "r": 11.205338478088379}, {"x": 6000, "y": 100000, "r": 3}, {"x": 12000, "y": 37000, "r": 19.832033157348633}, {"x": 3600, "y": 61671, "r": 9.885830879211426}, {"x": 6000, "y": 30846, "r": 9.453388214111328}, {"x": 9000, "y": 42000, "r": 11.172073364257812}, {"x": 17975, "y": 40000, "r": 16.583162307739258}, {"x": 10000, "y": 60000, "r": 10.085420608520508}, {"x": 29175, "y": 65000, "r": 19.499385833740234}, {"x": 35000, "y": 93200, "r": 11.881725311279297}, {"x": 9525, "y": 28000, "r": 15.940040588378906}, {"x": 23825, "y": 52000, "r": 14.0772066116333}, {"x": 10000, "y": 40000, "r": 5.627925872802734}, {"x": 16000, "y": 50000, "r": 17.891582489013672}, {"x": 12000, "y": 70000, "r": 10.540040969848633}, {"x": 10025, "y": 38000, "r": 23.83490753173828}, {"x": 7500, "y": 75000, "r": 10.395893096923828}, {"x": 12000, "y": 125000, "r": 14.0772066116333}, {"x": 8000, "y": 33217, "r": 13.722381591796875}, {"x": 10000, "y": 41600, "r": 6.404107093811035}, {"x": 5600, "y": 51000, "r": 8.178234100341797}, {"x": 15600, "y": 65000, "r": 6.969609260559082}, {"x": 8250, "y": 48000, "r": 5.428337097167969}], "title": "annual_inc vs loan_amnt", "reason": "annual_inc and loan_amnt show a moderate positive pattern in the plotted points (correlation 0.47).", "_reportSource": "custom"}, {"type": "histogram", "x": "int_rate", "x_min": null, "x_max": null, "bin_width": null, "x_label": "int_rate", "y_label": "Count", "caption": "Distribution of 'int_rate' across 396,030 values, split into 12 bars. Bar height = how many rows fall in that range.", "labels": ["5.32\u20137.46", "7.46\u20139.60", "9.60\u201311.74", "11.74\u201313.88", "13.88\u201316.02", "16.02\u201318.15", "18.15\u201320.29", "20.29\u201322.43", "22.43\u201324.57", "24.57\u201326.71", "26.71\u201328.85", "28.85\u201330.99"], "values": [28120, 50219, 60275, 76286, 71559, 43721, 35085, 14996, 10048, 4756, 788, 177], "title": "Histogram of int_rate", "reason": "Most int_rate values fall in the 11.74\u201313.88 range, with 76,286 record(s) in that bin.", "_reportSource": "custom"}, {"type": "pie", "x": "term", "caption": "Share of each category in 'term' \u2014 slice size = proportion of rows.", "labels": [" 36 months", " 60 months"], "values": [302005, 94025], "title": "Share of term", "reason": " 36 months is the largest group in term, with 302,005 record(s) (76.3% of the shown values).", "_reportSource": "custom"}];
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true, position: 'bottom' },
+                tooltip: { mode: 'index', intersect: false }
+            }
+        };
+        const pieColors = ['#5fd4d6', '#ffb627', '#5fd98c', '#ef6f6f', '#a78bfa', '#fb923c', '#34d399', '#f472b6', '#60a5fa', '#facc15', '#94a3b8', '#f87171'];
+
+        function fmtShort(value) {
+            const n = Number(value);
+            if (Number.isFinite(n)) {
+                return Math.abs(n) >= 1000
+                    ? n.toLocaleString(undefined, { maximumFractionDigits: 1 })
+                    : n.toFixed(Math.abs(n) < 10 ? 2 : 1).replace(/\.0$/, '');
+            }
+            return String(value);
+        }
+
+        function boxplotTooltipOptions(chart) {
+            return {
+                displayColors: false,
+                callbacks: {
+                    title: (items) => {
+                        const label = (items && items[0] && items[0].label) || 'all';
+                        return chart.group ? `${chart.group}: ${label}` : (chart.x || 'Box plot');
+                    },
+                    label: (ctx) => {
+                        const label = ctx.label || 'all';
+                        const stats = chart.groups && chart.groups[label];
+                        if (!stats) return `${ctx.dataset.label || chart.x || 'Value'}: ${fmtShort(ctx.parsed.y)}`;
+                        const current = ctx.dataset.label || 'Value';
+                        const iqr = Number(stats.q3) - Number(stats.q1);
+                        return [
+                            `${current}: ${fmtShort(ctx.parsed.y)}`,
+                            `Min: ${fmtShort(stats.min)}`,
+                            `Q1: ${fmtShort(stats.q1)}`,
+                            `Median: ${fmtShort(stats.median)}`,
+                            `Q3: ${fmtShort(stats.q3)}`,
+                            `Max: ${fmtShort(stats.max)}`,
+                            `IQR: ${fmtShort(iqr)}`,
+                            `Outliers: ${(stats.outliers || []).length}`,
+                        ];
+                    }
+                }
+            };
+        }
+
+        function renderHeatmap(canvas, chart) {
+            const matrix = chart.matrix || [];
+            const labels = chart.labels || [];
+            const n = matrix.length;
+            if (!n) return false;
+
+            const wrap = canvas.parentElement;
+            const rect = wrap.getBoundingClientRect();
+            const width = Math.max(640, Math.floor(rect.width || 640));
+            const height = Math.max(520, Math.floor(rect.height || 520));
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, width, height);
+
+            const labelSpace = labels.length ? 120 : 36;
+            const topSpace = 30;
+            const rightSpace = 24;
+            const bottomSpace = labels.length ? 130 : 36;
+            const plotW = width - labelSpace - rightSpace;
+            const plotH = height - topSpace - bottomSpace;
+            const size = Math.max(80, Math.min(plotW, plotH));
+            const cellSize = size / n;
+            const offsetX = labelSpace + Math.max(0, (plotW - size) / 2);
+            const offsetY = topSpace + Math.max(0, (plotH - size) / 2);
+
+            let maxAbs = 0;
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < (matrix[i] || []).length; j++) {
+                    const v = Number(matrix[i][j]);
+                    if (Number.isFinite(v)) maxAbs = Math.max(maxAbs, Math.abs(v));
+                }
+            }
+            if (!maxAbs) maxAbs = 1;
+
+            function cellColor(value) {
+                const intensity = Math.min(1, Math.abs(value) / maxAbs);
+                if (value >= 0) {
+                    const r = Math.round(255 - (255 - 220) * intensity);
+                    const g = Math.round(255 - (255 - 53) * intensity);
+                    const b = Math.round(255 - (255 - 69) * intensity);
+                    return `rgb(${r},${g},${b})`;
+                }
+                const r = Math.round(255 - (255 - 49) * intensity);
+                const g = Math.round(255 - (255 - 130) * intensity);
+                const b = Math.round(255 - (255 - 206) * intensity);
+                return `rgb(${r},${g},${b})`;
+            }
+
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    const v = Number((matrix[i] || [])[j] || 0);
+                    const x = offsetX + j * cellSize;
+                    const y = offsetY + i * cellSize;
+                    ctx.fillStyle = cellColor(v);
+                    ctx.fillRect(x, y, Math.max(1, cellSize - 1), Math.max(1, cellSize - 1));
+                    if (cellSize >= 34) {
+                        ctx.fillStyle = Math.abs(v) > maxAbs * 0.55 ? '#fff' : '#212529';
+                        ctx.font = `${Math.min(12, cellSize / 3)}px Arial, sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(v.toFixed(2), x + cellSize / 2, y + cellSize / 2);
+                    }
+                }
+            }
+
+            ctx.fillStyle = '#495057';
+            ctx.font = '11px Arial, sans-serif';
+            for (let i = 0; i < n; i++) {
+                const label = String(labels[i] || '');
+                ctx.save();
+                ctx.translate(offsetX + i * cellSize + cellSize / 2, offsetY + size + 10);
+                ctx.rotate(-Math.PI / 4);
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, 0, 0);
+                ctx.restore();
+
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, offsetX - 8, offsetY + i * cellSize + cellSize / 2);
+            }
+            return true;
+        }
+
+        function buildChartConfig(chart) {
+            switch (chart.type) {
+                case 'pie':
+                    return {
+                        type: 'doughnut',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                data: chart.values,
+                                backgroundColor: pieColors,
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            cutout: '52%',
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: {
+                                    position: 'right',
+                                    labels: { color: '#495057', boxWidth: 12, padding: 12 }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: (ctx) => {
+                                            const total = ctx.dataset.data.reduce((a, b) => a + Number(b || 0), 0);
+                                            const value = Number(ctx.parsed || 0);
+                                            const pct = total ? ` (${(value / total * 100).toFixed(1)}%)` : '';
+                                            return `${ctx.label}: ${value}${pct}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                case 'bar':
+                case 'histogram':
+                    return {
+                        type: 'bar',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                label: chart.x || 'Values',
+                                data: chart.values,
+                                backgroundColor: 'rgba(13,110,253,0.75)',
+                                borderColor: 'rgba(13,110,253,1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    };
+                case 'line':
+                    return {
+                        type: 'line',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                label: chart.y || chart.x || 'Series',
+                                data: chart.values,
+                                borderColor: 'rgba(13,110,253,0.85)',
+                                backgroundColor: 'rgba(13,110,253,0.3)',
+                                fill: true,
+                                tension: 0.25
+                            }]
+                        },
+                        options: chartOptions
+                    };
+                case 'scatter':
+                    return {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: chart.title || `${chart.x} vs ${chart.y}`,
+                                data: chart.points,
+                                pointRadius: 5,
+                                pointBackgroundColor: 'rgba(13,110,253,0.85)',
+                                borderColor: 'rgba(13,110,253,1)'
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            scales: {
+                                x: { type: 'linear', title: { display: true, text: chart.x } },
+                                y: { title: { display: true, text: chart.y } }
+                            }
+                        }
+                    };
+                case 'boxplot': {
+                    if (!chart.groups) return null;
+                    const groupEntries = Object.entries(chart.groups);
+                    if (!groupEntries.length) return null;
+                    const isSimple = chart._boxplotMode === 'simple';
+                    const bpLabels = groupEntries.map(([g]) => g);
+                    const bpDatasets = isSimple
+                        ? [{ label: chart.x || 'Median', data: groupEntries.map(([, s]) => (s && s.median) || 0), backgroundColor: 'rgba(95,212,214,0.73)' }]
+                        : [
+                            { label: 'Q1',     data: groupEntries.map(([, s]) => (s && s.q1)     || 0), backgroundColor: 'rgba(95,212,214,0.45)' },
+                            { label: 'Median', data: groupEntries.map(([, s]) => (s && s.median) || 0), backgroundColor: 'rgba(255,182,39,0.75)'  },
+                            { label: 'Q3',     data: groupEntries.map(([, s]) => (s && s.q3)     || 0), backgroundColor: 'rgba(95,217,140,0.45)'  }
+                          ];
+                    return {
+                        type: 'bar',
+                        data: { labels: bpLabels, datasets: bpDatasets },
+ 	                        options: {
+ 	                            ...chartOptions,
+ 	                            interaction: { mode: 'nearest', intersect: true },
+ 	                            plugins: {
+ 	                                ...chartOptions.plugins,
+ 	                                legend: { display: !isSimple, labels: { color: '#495057' } },
+ 	                                tooltip: boxplotTooltipOptions(chart)
+ 	                            },
+ 	                            scales: { y: { beginAtZero: true } }
+ 	                        }
+                    };
+                }
+                case 'word_frequency':
+                    if (!chart.labels || !chart.labels.length) return null;
+                    return {
+                        type: 'bar',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                label: chart.x || 'Count',
+                                data: chart.values,
+                                backgroundColor: 'rgba(13,110,253,0.75)',
+                                borderColor: 'rgba(13,110,253,1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    };
+                case 'wordcloud': {
+                    if (!chart.words || !chart.words.length) return null;
+                    const cloudContainer = document.createElement('div');
+                    cloudContainer.className = 'wordcloud-wrap';
+                    const counts = chart.words.map(w => w.count);
+                    const min = Math.min(...counts), max = Math.max(...counts);
+                    const scale = c => min === max ? 24 : 13 + ((c - min) / (max - min)) * 46;
+                    cloudContainer.innerHTML = chart.words.map((w, i) =>
+                        `<span style="font-size:${scale(w.count).toFixed(0)}px;color:${pieColors[i % pieColors.length]};" title="${w.word}: ${w.count} occurrence(s)">${w.word}</span>`
+                    ).join('');
+                    canvas.parentElement.insertBefore(cloudContainer, canvas);
+                    canvas.remove();
+                    return null;
+                }
+                case 'density': {
+                    if (!chart.labels || !chart.labels.length) return null;
+                    return {
+                        type: 'line',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                label: chart.x || 'Density',
+                                data: chart.values,
+                                borderColor: 'rgba(255,182,39,0.85)',
+                                backgroundColor: 'rgba(255,182,39,0.2)',
+                                fill: true,
+                                pointRadius: 0,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            scales: {
+                                x: { ticks: { maxTicksLimit: 10 } },
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    };
+                }
+                case 'violin': {
+                    if (!chart.groups || !Object.keys(chart.groups).length) return null;
+                    const groupEntries = Object.entries(chart.groups).filter(([, s]) => s);
+                    if (!groupEntries.length) return null;
+                    
+                    const violinLabels = groupEntries.map(([g]) => g);
+                    const violinDatasets = [
+                        { label: 'Q1', data: groupEntries.map(([, s]) => (s && s.q1) || 0), backgroundColor: 'rgba(95,212,214,0.45)' },
+                        { label: 'Median', data: groupEntries.map(([, s]) => (s && s.median) || 0), backgroundColor: 'rgba(255,182,39,0.75)' },
+                        { label: 'Q3', data: groupEntries.map(([, s]) => (s && s.q3) || 0), backgroundColor: 'rgba(95,217,140,0.45)' }
+                    ];
+                    
+                    return {
+                        type: 'bar',
+                        data: { labels: violinLabels, datasets: violinDatasets },
+                        options: {
+                            ...chartOptions,
+                            interaction: { mode: 'nearest', intersect: true },
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: true, labels: { color: '#495057' } }
+                            },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    };
+                }
+                case 'treemap': {
+                    if (!chart.labels || !chart.labels.length) return null;
+                    const treemapContainer = document.createElement('div');
+                    treemapContainer.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;width:100%;';
+                    const total = chart.values.reduce((a, b) => a + b, 0);
+                    treemapContainer.innerHTML = chart.labels.map((label, i) => {
+                        const share = total ? (chart.values[i] / total * 100).toFixed(1) : '0.0';
+                        return `<div style="background:${pieColors[i % pieColors.length]}cc;color:#fff;padding:12px;border-radius:4px;text-align:center;font-family:Arial,sans-serif;">
+                            <div style="font-weight:bold;font-size:12px;margin-bottom:4px;">${label.length > 15 ? label.slice(0, 12) + '…' : label}</div>
+                            <div style="font-size:10px;opacity:0.9;">${chart.values[i]} (${share}%)</div>
+                        </div>`;
+                    }).join('');
+                    canvas.parentElement.insertBefore(treemapContainer, canvas);
+                    canvas.remove();
+                    return null;
+                }
+                case 'radar': {
+                    if (!chart.labels || !chart.datasets || !chart.datasets.length) return null;
+                    return {
+                        type: 'radar',
+                        data: {
+                            labels: chart.labels,
+                            datasets: chart.datasets.map((ds, i) => ({
+                                label: ds.label || `Series ${i + 1}`,
+                                data: ds.data,
+                                borderColor: pieColors[i % pieColors.length],
+                                backgroundColor: pieColors[i % pieColors.length] + '33',
+                                pointBackgroundColor: pieColors[i % pieColors.length],
+                                borderWidth: 2
+                            }))
+                        },
+                        options: {
+                            ...chartOptions,
+                            scales: {
+                                r: {
+                                    beginAtZero: true,
+                                    ticks: { color: '#495057', backdropColor: 'transparent' },
+                                    grid: { color: '#dee2e6' },
+                                    pointLabels: { color: '#495057', font: { size: 11 } }
+                                }
+                            }
+                        }
+                    };
+                }
+                case 'scatter_map': {
+                    const notice = document.createElement('div');
+                    notice.className = 'chart-notice';
+                    notice.textContent = 'Scatter maps require an interactive map and cannot be rendered in the static HTML report.';
+                    notice.style.marginTop = '20px';
+                    canvas.parentElement.insertBefore(notice, canvas);
+                    canvas.remove();
+                    return null;
+                }
+                default:
+                    return null;
+            }
+        }
+
+        reportCharts.forEach((chart, index) => {
+            const canvas = document.getElementById(`chart_${index}`);
+            if (!canvas) return;
+            if (chart.type === 'heatmap') {
+                if (renderHeatmap(canvas, chart)) return;
+            }
+            const config = buildChartConfig(chart);
+            if (!config) {
+                // Some chart types (wordcloud, scatter_map) already remove the
+                // canvas themselves inside buildChartConfig. Only insert the
+                // fallback notice if the canvas is still attached — otherwise
+                // canvas.parentElement is null here and this throws, which
+                // would abort the whole forEach and skip every later chart.
+                if (canvas.isConnected) {
+                    const notice = document.createElement('div');
+                    notice.className = 'chart-notice';
+                    notice.textContent = 'This visualization is not rendered as an interactive chart in the downloaded report.';
+                    canvas.parentElement.insertBefore(notice, canvas);
+                    canvas.remove();
+                }
+                return;
+            }
+            new Chart(canvas, config);
+        });
+    </script>
+</body>
+</html>
