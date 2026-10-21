@@ -624,18 +624,19 @@
         <form class="contact-form" onsubmit="handleForm(event)">
           <div class="form-group">
             <label>name</label>
-            <input type="text" placeholder="Your name" required>
+            <input type="text" name="name" placeholder="Your name" required>
           </div>
           <div class="form-group">
             <label>email</label>
-            <input type="email" placeholder="your@email.com" required>
+            <input type="email" name="email" placeholder="your@email.com" required>
           </div>
           <div class="form-group">
             <label>message</label>
-            <textarea rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+            <textarea rows="5" name="message" placeholder="Tell me about your project or opportunity..." required></textarea>
           </div>
-          <button type="submit" class="form-submit"><i class="fas fa-paper-plane"></i> Send Message</button>
+          <button type="submit" class="form-submit" id="form-submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
           <p id="form-msg" style="color:var(--accent3);font-size:0.85rem;display:none;">✓ Thanks! I'll get back to you soon.</p>
+          <p id="form-err" style="color:#f87171;font-size:0.85rem;display:none;">Something went wrong — please email me directly instead.</p>
         </form>
       </div>
     </div>
@@ -659,8 +660,34 @@ document.getElementById('hamburger').addEventListener('click', () => {
 
 function handleForm(e) {
   e.preventDefault();
-  document.getElementById('form-msg').style.display = 'block';
-  e.target.reset();
+  const form = e.target;
+  const btn = document.getElementById('form-submit-btn');
+  const msg = document.getElementById('form-msg');
+  const err = document.getElementById('form-err');
+
+  msg.style.display = 'none';
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = 'Sending...';
+
+  fetch('https://formspree.io/f/xrpewrle', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: new FormData(form)
+  })
+    .then(res => {
+      if (res.ok) {
+        msg.style.display = 'block';
+        form.reset();
+      } else {
+        err.style.display = 'block';
+      }
+    })
+    .catch(() => { err.style.display = 'block'; })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+    });
 }
 
 const obs = new IntersectionObserver(entries => {
