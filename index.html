@@ -194,6 +194,146 @@
     }
     .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Experience Section ─────────────────────────────────────────── */
+    #experience {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-timeline {
+      position: relative;
+      padding-left: 1.75rem;
+      border-left: 2px solid var(--border);
+    }
+    .exp-timeline::before {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 1.65rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent3);
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.15);
+    }
+    .exp-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .exp-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-role-group h3 {
+      font-size: 1.3rem;
+      color: var(--heading);
+      margin: 0.45rem 0 0.25rem;
+    }
+    .exp-company {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .exp-date-pill {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: var(--bg2);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .exp-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .exp-metric {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+    }
+    .exp-metric-val {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--heading);
+      display: block;
+    }
+    .exp-metric-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .exp-modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.35rem;
+    }
+    .exp-module {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      transition: border-color 0.2s ease;
+    }
+    .exp-module:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+    .exp-module-num {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent3);
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .exp-module h4 {
+      font-size: 0.95rem;
+      color: var(--heading);
+      margin: 0 0 0.4rem;
+    }
+    .exp-module p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .exp-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 600px) {
+      .exp-timeline { padding-left: 1.1rem; }
+      .exp-card { padding: 1.25rem; }
+    }
   </style>
 </head>
 <body>
@@ -202,6 +342,7 @@
   <div class="nav-logo">sm<span>/</span>portfolio</div>
   <ul class="nav-links" id="navLinks">
     <li><a href="#home">Home</a></li>
+    <li><a href="#experience">Experience</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#certifications">Certifications</a></li>
     <li><a href="#research">Research</a></li>
@@ -215,7 +356,7 @@
 <section id="home">
   <div class="hero-grid section-inner">
     <div class="hero-left">
-      <span class="hero-tag">// Data Science Intern @ Auspify Technologies · Open to full-time roles</span>
+      <span class="hero-tag">// Available for opportunities</span>
       <h1 class="hero-name">Samwel<br>Morara</h1>
       <p class="hero-title">Data Scientist & Backend Developer</p>
       <p class="hero-desc">
@@ -252,6 +393,94 @@
         <div class="metric-row"><span class="metric-label">Precision</span><span class="metric-val">46%</span></div>
         <div class="metric-row"><span class="metric-label">F1 Score</span><span class="metric-val">0.60</span></div>
         <div class="metric-row"><span class="metric-label">Status</span><span class="metric-val">✓ Deployed</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="section-inner">
+    <p class="section-label">// career</p>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">Practical industry exposure applying end-to-end data science, NLP, and machine learning workflows.</p>
+
+    <div class="exp-timeline fade-in">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div class="exp-role-group">
+            <span class="research-badge badge-green">REMOTE INTERNSHIP</span>
+            <h3>Data Science Intern</h3>
+            <div class="exp-company">
+              <span>Auspify Technologies</span>
+              <span>·</span>
+              <span>Nagpur, India (Remote)</span>
+            </div>
+          </div>
+          <span class="exp-date-pill">Oct 2026 – Nov 2026</span>
+        </div>
+
+        <p style="color: var(--muted); font-size: 0.94rem; line-height: 1.7; margin: 0;">
+          Completed a 4-week practical Data Science internship building a 6-part analytical and machine learning pipeline on a Netflix catalog dataset, taking raw records from cleaning and feature engineering through predictive modeling and BI reporting.
+        </p>
+
+        <div class="exp-metrics">
+          <div class="exp-metric">
+            <span class="exp-metric-val">8,790+</span>
+            <span class="exp-metric-label">Catalog Records Cleaned</span>
+          </div>
+          <div class="exp-metric">
+            <span class="exp-metric-val">6 Modules</span>
+            <span class="exp-metric-label">End-to-End DS Pipeline</span>
+          </div>
+          <div class="exp-metric">
+            <span class="exp-metric-val">TF-IDF</span>
+            <span class="exp-metric-label">Cosine Similarity Engine</span>
+          </div>
+          <div class="exp-metric">
+            <span class="exp-metric-val">Looker BI</span>
+            <span class="exp-metric-label">Interactive Dashboard</span>
+          </div>
+        </div>
+
+        <div class="exp-modules">
+          <div class="exp-module">
+            <span class="exp-module-num">01 // DATA ENGINEERING &amp; EDA</span>
+            <h4>Catalog Cleaning &amp; Trend Analysis</h4>
+            <p>Imputed missing metadata, engineered temporal features, and regex-parsed runtimes in Pandas; visualized 2017–2020 growth peaks and top markets.</p>
+          </div>
+
+          <div class="exp-module">
+            <span class="exp-module-num">02 // NLP RECOMMENDER</span>
+            <h4>Content-Based Similarity Engine</h4>
+            <p>Built a title recommendation pipeline using Scikit-Learn, TF-IDF vectorization, and cosine similarity across genres, directors, and countries.</p>
+          </div>
+
+          <div class="exp-module">
+            <span class="exp-module-num">03 // PREDICTIVE ML</span>
+            <h4>Forecasting &amp; Binary Classification</h4>
+            <p>Trained a Linear Regression expansion model and evaluated Logistic Regression and Random Forest classifiers to distinguish Movies from TV Shows.</p>
+          </div>
+
+          <div class="exp-module">
+            <span class="exp-module-num">04 // BUSINESS INTELLIGENCE</span>
+            <h4>Interactive Looker Studio Dashboard</h4>
+            <p>Translated model outputs and catalog metrics into an executive dashboard with actionable content acquisition recommendations.</p>
+          </div>
+        </div>
+
+        <div class="exp-footer">
+          <div class="project-stack" style="margin: 0;">
+            <span class="tag">Python</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Scikit-Learn</span>
+            <span class="tag">TF-IDF</span>
+            <span class="tag">Random Forest</span>
+            <span class="tag">Looker Studio</span>
+            <span class="tag">Seaborn</span>
+          </div>
+
+          <a href="https://github.com/onguti-star" target="_blank" class="cert-btn secondary"><i class="fab fa-github"></i> View GitHub</a>
+        </div>
       </div>
     </div>
   </div>
@@ -482,25 +711,6 @@
         <a href="autods_report.html" target="_blank" class="btn-primary" style="margin-top:1.1rem;align-self:flex-start;">
           <i class="fas fa-file-chart-line"></i> View Live Sample Report
         </a>
-      </div>
-
-      <div class="project-card featured fade-in">
-        <div class="featured-badge"><i class="fas fa-star" style="font-size:0.55rem;"></i>&nbsp; FEATURED · DATA SCIENCE INTERNSHIP, AUSPIFY TECHNOLOGIES</div>
-        <div class="project-top">
-          <span class="project-icon">🎬</span>
-        </div>
-        <h3>Netflix Catalog Analytics & Recommendation Engine</h3>
-        <p>Six end-to-end data science tasks completed during my internship at Auspify Technologies, turning a raw 8,790-title Netflix catalog into a full analytics and ML suite. Cleaned and feature-engineered the dataset in Pandas, then ran an EDA uncovering content and country trends (US, India, and the UK lead the catalog). Built a content-based recommender using TF-IDF + cosine similarity, a Linear Regression model forecasting catalog growth, and Logistic Regression / Random Forest classifiers to predict Movie vs. TV Show. Tied it all together in an interactive business insights dashboard.</p>
-        <div class="project-metrics">
-          <div class="pm-box"><span class="pm-val">8.7K</span><div class="pm-lbl">Titles Analyzed</div></div>
-          <div class="pm-box"><span class="pm-val">6</span><div class="pm-lbl">DS Tasks Shipped</div></div>
-          <div class="pm-box"><span class="pm-val">2</span><div class="pm-lbl">ML Models Trained</div></div>
-        </div>
-        <div class="project-stack">
-          <span class="tag">Python</span><span class="tag">Pandas</span>
-          <span class="tag">Scikit-Learn</span><span class="tag">TF-IDF</span>
-          <span class="tag">Matplotlib</span><span class="tag">Seaborn</span>
-        </div>
       </div>
 
       <div class="project-card featured fade-in">
